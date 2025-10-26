@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "transacciones")
+@Table(name = "inversiones")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Transaccion {
+public class Inversion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,12 +34,8 @@ public class Transaccion {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="tipo_id", nullable=false)
-    private TipoTransferencia tipoTransferencia;
-
-    @ManyToOne
-    @JoinColumn(name="categoria_id", nullable=false)
-    private CategoriaTransferencia categoriaTransferencia;
+    @JoinColumn(name="activo_financiero_id",nullable=false)
+    private ActivoFinanciero activoFinanciero;
 
     @Column(nullable=false)
     private LocalDateTime fechaTransaccion;
@@ -47,8 +43,11 @@ public class Transaccion {
     @Column(nullable=false)
     private Double cantidad;
 
+    @Column(nullable=false)
+    private Double precio;
+
     @Column(nullable=true)
-    private String description;
+    private Boolean tipo; // True = Compra // False = Venta
 
 }
 

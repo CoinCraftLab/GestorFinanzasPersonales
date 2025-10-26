@@ -17,40 +17,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "transacciones")
+@Table(name = "categoriaPresupuestoRelation")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Transaccion {
+
+public class CategoriaPresupuestoRelation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="user_id",nullable=false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name="tipo_id", nullable=false)
-    private TipoTransferencia tipoTransferencia;
+    @JoinColumn(name="presupuesto_id",nullable=false)
+    private Presupuesto user_id;
 
     @ManyToOne
     @JoinColumn(name="categoria_id", nullable=false)
     private CategoriaTransferencia categoriaTransferencia;
 
-    @Column(nullable=false)
-    private LocalDateTime fechaTransaccion;
-
-    @Column(nullable=false)
-    private Double cantidad;
-
-    @Column(nullable=true)
-    private String description;
-
 }
-
 
 

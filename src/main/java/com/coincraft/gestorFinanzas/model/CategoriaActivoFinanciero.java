@@ -17,25 +17,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "categoria_transferencias")
+@Table(name = "categoria_activo_financiero")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoriaTransferencia {
+public class CategoriaActivoFinanciero {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(nullable=false)
+    private String nombre;
 
-    @OneToMany(mappedBy="categoriaTransferencia", cascade=CascadeType.ALL,orphanRemoval=true)
-    private List<Transaccion> transaccions;
+    @OneToMany(mappedBy="categoriaActivoFinanciero",cascade=CascadeType.ALL,orphanRemoval=true)
+    private List<ActivoFinanciero> activoFinanciero;
 
-    @OneToMany(mappedBy="categoriaTransferencia", cascade=CascadeType.ALL,orphanRemoval=true)
-    private List<CategoriaPresupuestoRelation> categoriaPresupuestoRelations;
-    
 }
+

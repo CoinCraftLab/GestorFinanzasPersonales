@@ -28,7 +28,7 @@ public class AuthController {
     private final JwtService jwtService;
 
     //Register
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         
         User user = User.builder()
@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     //Login
-    @PostMapping("/login")
+    @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         
         //Buscamos al usuario por el email
@@ -66,7 +66,7 @@ public class AuthController {
     }
 
     //Logout
-    @PostMapping("/logout")
+    @PostMapping("logout")
     public ResponseEntity<?> logout() {
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
