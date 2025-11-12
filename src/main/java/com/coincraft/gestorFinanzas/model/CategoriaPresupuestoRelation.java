@@ -1,8 +1,7 @@
 package com.coincraft.gestorFinanzas.model;
 
-import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,7 +31,7 @@ public class CategoriaPresupuestoRelation {
 
     @ManyToOne
     @JoinColumn(name="presupuesto_id",nullable=false)
-    private Presupuesto user_id;
+    private Presupuesto presupuesto;
 
     @ManyToOne
     @JoinColumn(name="categoria_id", nullable=false)

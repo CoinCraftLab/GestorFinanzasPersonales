@@ -50,7 +50,7 @@ public class Presupuesto {
     @Column(nullable=true)
     private String description;
 
-    @OneToMany(mappedBy="presupuestos", cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy="presupuesto", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<CategoriaPresupuestoRelation> categoriaPresupuestoRelations;
 
 }
