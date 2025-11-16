@@ -1,7 +1,7 @@
 package com.coincraft.gestorFinanzas.controller.API;
 
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -12,7 +12,7 @@ import org.springframework.http.HttpHeaders;
 import com.coincraft.gestorFinanzas.dto.LoginRequest;
 import com.coincraft.gestorFinanzas.dto.RegisterRequest;
 import com.coincraft.gestorFinanzas.dto.TokenResponse;
-
+import com.coincraft.gestorFinanzas.dto.userDTO.ApiMessageResponse;
 import com.coincraft.gestorFinanzas.service.AuthService;
 
 
@@ -39,13 +39,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-        public TokenResponse refreshToken(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) final String authentication
-    ) {
+    public TokenResponse refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authentication) {
         return authService.refreshToken(authentication);
     }
 
-
-    
-    
 }

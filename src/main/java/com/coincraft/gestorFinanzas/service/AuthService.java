@@ -15,6 +15,7 @@ import com.coincraft.gestorFinanzas.repository.UserRepository;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import jakarta.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
@@ -107,5 +108,6 @@ public class AuthService {
 
         return new TokenResponse(accessToken, refreshToken);
     }
+
     
 }

@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.coincraft.gestorFinanzas.dto.TokenResponse;
+import com.coincraft.gestorFinanzas.dto.userDTO.ApiMessageResponse;
 import com.coincraft.gestorFinanzas.dto.userDTO.ChangeEmailResponse;
+import com.coincraft.gestorFinanzas.dto.userDTO.ChangePasswordResponse;
 import com.coincraft.gestorFinanzas.dto.userDTO.UpdateEmailRequest;
 import com.coincraft.gestorFinanzas.dto.userDTO.UpdateNameRequest;
+import com.coincraft.gestorFinanzas.dto.userDTO.UpdatePasswordRequest;
 import com.coincraft.gestorFinanzas.dto.userDTO.UserProfileResponse;
 import com.coincraft.gestorFinanzas.model.Token;
 import com.coincraft.gestorFinanzas.model.User;
@@ -31,7 +34,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
-    private final AuthService authService;
 
     private User getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -67,10 +69,8 @@ public class UserService {
         userRepository.save(user);
         
         revokeAllUserTokens(user);
-        String access_token = jwtService.generateToken(user);
-        String refresh_token = jwtService.generateRefreshToken(user);
-
-        return new ChangeEmailResponse(previousEmail,user.getEmail(),new TokenResponse(access_token, refresh_token));
+        TokenResponse tokens = reNewTokens(user);
+        return new ChangeEmailResponse(previousEmail,user.getEmail(),tokens);
     }
 
     private void revokeAllUserTokens(final User user) {
@@ -83,6 +83,74 @@ public class UserService {
             tokenRepository.saveAll(validUserTokens);
         }
     }
+
+    public ChangePasswordResponse changePassword(UpdatePasswordRequest request){
+
+        User user = getAuthenticatedUser();
+
+        if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Contraseña actual incorrecta");
+        }
+
+        if (!request.newPassword().equals(request.newConfirmationPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Las contraseñas no coinciden");
+        }
+
+        if (passwordEncoder.matches(request.newPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La nueva contraseña debe ser diferente");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+
+        revokeAllUserTokens(user);
+        TokenResponse tokens = reNewTokens(user);
+
+        return new ChangePasswordResponse("Contraseña actulizada correctamente", tokens);
+    }
+
+    public ApiMessageResponse logout(String authorizationHeader){
+        User user = getAuthenticatedUser();
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Authorization header inválido");
+        }
+
+        final String tokenValue = authorizationHeader.substring(7);
+        Token storedToken = tokenRepository.findByToken(tokenValue)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Token no encontrado"));
+
+        if (!storedToken.getUser().getId().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "El token no pertenece al usuario autenticado");
+        }
+
+        storedToken.setIsExpired(true);
+        storedToken.setIsRevoked(true);
+        tokenRepository.save(storedToken);
+        SecurityContextHolder.clearContext();
+
+        return new ApiMessageResponse("Sesión cerrada correctamente");
+    }
+
+
+    private TokenResponse reNewTokens(User user){
+        String accessToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        tokenRepository.save(
+            Token.builder()
+                .user(user)
+                .token(accessToken)
+                .tokenType(Token.TokenType.BEARER)
+                .isExpired(false)
+                .isRevoked(false)
+                .build()
+        );
+
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
+
 }
     
     

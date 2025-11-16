@@ -2,11 +2,11 @@ package com.coincraft.gestorFinanzas.controller.API;
 
 import java.util.List;
 
-import static org.hibernate.internal.util.PropertiesHelper.map;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +21,7 @@ import com.coincraft.gestorFinanzas.dto.userDTO.ApiMessageResponse;
 import com.coincraft.gestorFinanzas.dto.userDTO.ChangeEmailResponse;
 import com.coincraft.gestorFinanzas.dto.userDTO.UpdateEmailRequest;
 import com.coincraft.gestorFinanzas.dto.userDTO.UpdateNameRequest;
+import com.coincraft.gestorFinanzas.dto.userDTO.UpdatePasswordRequest;
 import com.coincraft.gestorFinanzas.dto.userDTO.UserProfileResponse;
 import com.coincraft.gestorFinanzas.service.UserService;
 
@@ -63,7 +64,21 @@ public class UserController {
     public ResponseEntity<ChangeEmailResponse> changeUserEmail(
         @RequestBody @Valid UpdateEmailRequest request) {
     return ResponseEntity.ok(userService.changeEmail(request));
-}
+    }
+    
+
+    //Cambiar la password del usuario
+    @PutMapping("/changeUserPassword")
+    public ResponseEntity<?> changeUserPassword(@RequestBody @Valid UpdatePasswordRequest request){
+        return ResponseEntity.ok(userService.changePassword(request));
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<ApiMessageResponse> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        return ResponseEntity.ok(userService.logout(authorizationHeader));
+    }  
+    
+
     
 
 
