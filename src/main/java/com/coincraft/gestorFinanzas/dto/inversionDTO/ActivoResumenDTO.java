@@ -20,18 +20,21 @@ public class ActivoResumenDTO {
     private Double valorInvertido;
     private Double valorActual;
 
-    public Double getPorcentajePortfolio(Double balanceTotal) {
-        if (balanceTotal==0 || balanceTotal==null) return 0.0;
-        return (valorActual / balanceTotal) * 100;
+    public String getPorcentajePortfolio(Double balanceTotal) {
+        if (balanceTotal==0 || balanceTotal==null) return "0%";
+        double porcentaje=(valorActual / balanceTotal) * 100;
+        return String.format("%.2f%%", porcentaje);
     }
 
-    public Double getGananciaPerdida() {
-        return valorActual - valorInvertido;
+    public String getGananciaPerdida() {
+        double ganancia=valorActual - valorInvertido;
+        return String.format("%.2f\u20AC", ganancia);
     }
 
-    public Double getPorcentajeGananciaPerdida() {
-        if (valorInvertido == 0) return 0.0;
-        return ((valorActual - valorInvertido) / valorInvertido) * 100;
+    public String getPorcentajeGananciaPerdida() {
+        if (valorInvertido == 0) return "0%";
+        double porcentaje=((valorActual - valorInvertido) / valorInvertido) * 100;
+        return String.format("%.2f%%", porcentaje);
     }
 
 }
