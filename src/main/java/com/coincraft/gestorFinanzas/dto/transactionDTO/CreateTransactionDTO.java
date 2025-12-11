@@ -18,7 +18,6 @@ import lombok.Data;
 //Lo que el cliente envía para CREAR una transacción
 @Data
 public class CreateTransactionDTO {
-    private Long userId;
     private Long tipoTransferenciaId;
     private Long categoriaTransferenciaId;
     private String fechaTransaccion;//Luego se convertirá a a LocalDateTime en el service
