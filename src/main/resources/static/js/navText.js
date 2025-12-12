@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname; 
 
+    let textPath = document.getElementById("textoPruebaRuta");
+    textPath.textContent = path;
+
     if (path.startsWith('/index')) {
         let btn = document.getElementById("navButtonInicio");
         let img = document.getElementById("navImgInicio");
