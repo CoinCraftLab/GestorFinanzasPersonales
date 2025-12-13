@@ -1,8 +1,8 @@
 package com.coincraft.gestorFinanzas.dto.retoDTO;
 
-import com.coincraft.gestorFinanzas.model.Retos;
-
 import java.time.LocalDateTime;
+
+import com.coincraft.gestorFinanzas.model.Retos;
 
 /*
     - Respuesta para los métodos del cotrolador.
@@ -19,7 +19,7 @@ public record RetoResponse (Long id,
     public static RetoResponse fromEntity(Retos reto) {
         return new RetoResponse(
                 reto.getId(),
-                reto.getUser_id().getId(),
+                reto.getUser().getId(),
                 reto.getNombre(),
                 reto.getRetoCantidad(),
                 reto.getRetoCantidadActual(),

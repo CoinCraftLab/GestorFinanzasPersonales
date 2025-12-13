@@ -1,13 +1,9 @@
 package com.coincraft.gestorFinanzas.service;
 
-import com.coincraft.gestorFinanzas.dto.retoDTO.*;
-import com.coincraft.gestorFinanzas.model.MovimientoReto;
-import com.coincraft.gestorFinanzas.model.Retos;
-import com.coincraft.gestorFinanzas.model.User;
-import com.coincraft.gestorFinanzas.repository.MovimientoRepository;
-import com.coincraft.gestorFinanzas.repository.RetoRepository;
-import com.coincraft.gestorFinanzas.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,9 +12,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.coincraft.gestorFinanzas.dto.retoDTO.MovimientoRequest;
+import com.coincraft.gestorFinanzas.dto.retoDTO.MovimientoResponse;
+import com.coincraft.gestorFinanzas.dto.retoDTO.RetoDetalleDTO;
+import com.coincraft.gestorFinanzas.dto.retoDTO.RetoRequest;
+import com.coincraft.gestorFinanzas.dto.retoDTO.RetoResponse;
+import com.coincraft.gestorFinanzas.dto.retoDTO.RetoResumenDTO;
+import com.coincraft.gestorFinanzas.model.MovimientoReto;
+import com.coincraft.gestorFinanzas.model.Retos;
+import com.coincraft.gestorFinanzas.model.User;
+import com.coincraft.gestorFinanzas.repository.MovimientoRepository;
+import com.coincraft.gestorFinanzas.repository.RetoRepository;
+import com.coincraft.gestorFinanzas.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +73,7 @@ public class RetoService {
         Retos reto=retoRepository.findById(retoId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Reto no encontrado"));
 
         //Comprueba que el reto pertenece al usuario
-        if (!reto.getUser_id().getId().equals(user.getId())) {
+        if (!reto.getUser().getId().equals(user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tiene permiso para modificar este reto");
         }
 
@@ -103,7 +110,7 @@ public class RetoService {
 
         //Crea objeto con los datos recogidos en la reques
         Retos reto=Retos.builder()
-                .user_id(user)
+                .user(user)
                 .nombre(request.nombre())
                 .retoCantidad(request.retoCantidad())
                 .retoCantidadActual(0.0)
@@ -129,7 +136,7 @@ public class RetoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reto no encontrado"));
 
         //Comprueba que el reto pertenece al usuario
-        if (!reto.getUser_id().getId().equals(user.getId())) {
+        if (!reto.getUser().getId().equals(user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tiene permiso para ver este reto");
         }
 
@@ -161,7 +168,7 @@ public class RetoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reto no encontrado"));
 
         //Comprueba que el usuario puede modificar
-        if (!reto.getUser_id().getId().equals(user.getId())) {
+        if (!reto.getUser().getId().equals(user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tiene permiso para editar este reto");
         }
 
@@ -194,7 +201,7 @@ public class RetoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reto no encontrado"));
 
         //Comprueba que el usuario puede modificar
-        if (!reto.getUser_id().getId().equals(user.getId())) {
+        if (!reto.getUser().getId().equals(user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tiene permiso para eliminar este reto");
         }
 

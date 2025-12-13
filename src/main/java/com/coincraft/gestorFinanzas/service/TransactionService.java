@@ -2,7 +2,13 @@ package com.coincraft.gestorFinanzas.service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.coincraft.gestorFinanzas.dto.transactionDTO.CreateTransactionDTO;
 import com.coincraft.gestorFinanzas.dto.transactionDTO.TransactionResponseDTO;
@@ -33,8 +39,7 @@ public class TransactionService {
     public TransactionResponseDTO crearTransaccion(CreateTransactionDTO dto){
 
         //Buscar el usuario
-        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> 
-            new RuntimeException("Usuario no encontrado"));
+        User user = getAuthenticatedUser();
 
         //Buscar el tipo de transferencia
         TipoTransferencia tipo = tipoTransferenciaRepository.findById(dto.getTipoTransferenciaId())
@@ -153,5 +158,15 @@ public class TransactionService {
         dto.setDescripcion(t.getDescription());
 
         return dto;
+    }
+
+    //Metodo para devolver al user autenticado 
+    private User getAuthenticatedUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !(auth.getPrincipal() instanceof UserDetails details)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado");
+        }
+        return userRepository.findByEmail(details.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

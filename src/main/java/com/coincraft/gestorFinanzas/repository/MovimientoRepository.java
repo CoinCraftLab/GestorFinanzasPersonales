@@ -1,12 +1,13 @@
 package com.coincraft.gestorFinanzas.repository;
 
-import com.coincraft.gestorFinanzas.model.MovimientoReto;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.coincraft.gestorFinanzas.model.MovimientoReto;
 
 public interface MovimientoRepository extends JpaRepository<MovimientoReto, Long> {
 
     //Busca los movimientos de un reto específico
-    List<MovimientoReto> findByRetoId(Long retoId);
+    List<MovimientoReto> findByRetoId(Long reto_id);
 }

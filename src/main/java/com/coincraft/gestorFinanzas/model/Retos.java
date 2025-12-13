@@ -20,7 +20,7 @@ public class Retos{
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
-    private User user_id;
+    private User user;
 
     @Column(nullable = false)
     private String nombre;

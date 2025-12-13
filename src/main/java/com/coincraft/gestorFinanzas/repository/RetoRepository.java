@@ -1,12 +1,13 @@
 package com.coincraft.gestorFinanzas.repository;
 
-import com.coincraft.gestorFinanzas.model.Retos;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.coincraft.gestorFinanzas.model.Retos;
 
 public interface RetoRepository extends JpaRepository<Retos, Long> {
 
     //Busca los retos del usuario
-    List<Retos> findByUserId(Long userId);
+    List<Retos> findByUserId(Long user_id);
 }

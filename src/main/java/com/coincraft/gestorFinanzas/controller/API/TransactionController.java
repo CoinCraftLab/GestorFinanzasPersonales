@@ -32,16 +32,13 @@ public class TransactionController {
 
 
     //1. CREAR TRANSACCION (POST)
-    @PostMapping("/{id}")
+    @PostMapping()
     public ResponseEntity<TransactionResponseDTO> crearTransaccion(
             @RequestBody CreateTransactionDTO dto){
 
         TransactionResponseDTO response = transactionService.crearTransaccion(dto);
         return ResponseEntity.ok(response);
     }
-
-
-
 
     //2. OBTENER TRANSACCION POR ID (GET)
     @GetMapping("/{id}")
@@ -51,8 +48,6 @@ public class TransactionController {
         TransactionResponseDTO response = transactionService.obtenerTransaccion(id);
         return ResponseEntity.ok(response);
     }
-
-
 
 
     //3. EDITAR TRANSACCION (PUT)
@@ -65,8 +60,6 @@ public class TransactionController {
     }
 
 
-
-
     //4. ELIMINAR TRANSACCION (DELETE)
     @DeleteMapping("/{id}")
     public ResponseEntity<TransactionResponseDTO> eliminarTransaccion(
@@ -76,6 +69,10 @@ public class TransactionController {
         return ResponseEntity.noContent().build();
 
     }
+
+    //5. LISTAR TRANSACCIONES DE USER AUTH
+    //@GetMapping("/allUserTransaction")
+    
         
     
 
