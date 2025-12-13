@@ -41,3 +41,13 @@ body {
     flex-direction: column;
     gap:-1rem;
 }
+
+.divPartidoVertical{
+    display:flex;
+}
+
+.divPartidoVertical > div {
+    flex: 1 1 50%
+}
+
+

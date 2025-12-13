@@ -46,7 +46,32 @@
     </div>
 
     <div class="contenido">
-        <p th:text="${mensaje}">Mensaje de prueba</p>
+        <div class="divPartidoVertical">
+            <div class="divVerticalLeft">
+                <p th:text="${mensaje}">Mensaje de prueba</p>
+            </div>
+            <div class="divVerticalRight">
+                <p style="font-size:4rem; font-weight: 700;">Añadir Transaccion</p>
+                <form method="post">
+
+                    <label>Fecha*</label>
+                    <input id="fecha" type="datetime" required />
+
+                    <label>Tipo</label>
+                    <input id="" type="" required />
+
+                    <label>Categoria*</label>
+                    <input id="" type="" required />
+
+                    <label>Cantidad</label>
+                    <input id="" type="text" required />
+
+                    <label>Informacion</label>
+                    <input id="" type="text" required />
+                    
+                </form>
+            </div>
+        </div>
     </div>
 
 </body>
