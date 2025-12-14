@@ -1,6 +1,6 @@
 package com.coincraft.gestorFinanzas.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +42,7 @@ public class Transaccion {
     private CategoriaTransferencia categoriaTransferencia;
 
     @Column(nullable=false)
-    private LocalDateTime fechaTransaccion;
+    private LocalDate fechaTransaccion;
 
     @Column(nullable=false)
     private Double cantidad;

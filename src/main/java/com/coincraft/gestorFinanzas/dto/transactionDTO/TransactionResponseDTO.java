@@ -1,5 +1,7 @@
 package com.coincraft.gestorFinanzas.dto.transactionDTO;
 
+import java.time.LocalDate;
+
 import lombok.Data;
 
 
@@ -12,7 +14,7 @@ public class TransactionResponseDTO {
     private String tipoTransferenciaNombre;
     private Long categoriaTransferenciaId;
     private String categoriaTransferenciaNombre;
-    private String fechaTransaccion;
+    private LocalDate fechaTransaccion;
     private Double cantidad;
     private String descripcion;
 }

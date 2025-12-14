@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Transacciones</title>
+    <title>Edit Transacciones</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 
@@ -56,17 +56,18 @@
                         <thead>
                             <tr style="gap:2rem; padding:2rem; justify-content: center; align-items: center;">
                                 <th class="thTable">Fecha</th>
-                                <th class="thTable">Categoria</th>
                                 <th class="thTable">Tipo</th>
+                                <th class="thTable">Categoria</th>
                                 <th class="thTable">Cantidad</th>
                                 <th class="thTable">Descripcion</th>
                             </tr>
                         </thead>
-                        <tbody class="">
-                            <tr th:each="row: ${historicoTransferencias}" class="row-selectable" th:attr="data-id=${row.id}">
+                        <tbody>
+                            <tr th:each="row: ${historicoTransferencias}" class="row-selectable"
+                                th:attr="data-id=${row.id}">
                                 <td class="trTable" th:text="${row.fechaTransaccion}"></td>
-                                <td class="trTable" th:text="${row.categoriaTransferenciaNombre}"></td>
                                 <td class="trTable" th:text="${row.tipoTransferenciaNombre}"></td>
+                                <td class="trTable" th:text="${row.categoriaTransferenciaNombre}"></td>
                                 <td class="trTable" th:text="${row.cantidad}"></td>
                                 <td class="trTable" th:text="${row.descripcion}"></td>
                             </tr>
@@ -76,38 +77,60 @@
 
             </div>
             <div class="divVerticalRight">
-                <p style="font-size:2.5rem; font-weight: 700;">Añadir Transaccion</p>
-                <div style="width:700px; height:500px; display:flex; align-items:flex-start; justify-content: center;">
-                    <form method="post" style="display:flex; flex-direction: column; justify-content: center; width:100%;">
+
+                <p style="font-size:2.5rem; font-weight: 700;">Editar Transaccion</p>
+
+                <div
+                    style="width:700px; height:500px; display:flex; align-items:flex-start; justify-content: flex-start; flex-direction: column;">
+
+                    <form method="post" th:object="${transaccion}"
+                        style="display:flex; flex-direction: column; justify-content: center; width:100%;">
+
+                        <input type="hidden" th:field="*{id}" />
 
                         <label>Fecha*</label>
-                        <input id="fecha" type="date" name="fechaTransaccion" style="margin-bottom: 1rem;" required />
+                        <input id="fecha" type="date" name="fechaTransaccion" style="margin-bottom: 1rem;"
+                            th:value="${transaccion.fechaTransaccion != null ? #temporals.format(transaccion.fechaTransaccion,'yyyy-MM-dd') : ''}"
+                            required />
+
+                        <label>Categoria*</label>
+                        <select id="categoria" name="categoriaTransferenciaId" th:field="*{categoriaTransferenciaId}"
+                            required style="padding-bottom: 1rem; margin-bottom: 1rem;">
+                            <option value="" disabled selected>Selecciona una categoría</option>
+                            <option th:each="c : ${categoriaTransferencia}" th:value="${c.id}" th:text="${c.name}">
+                            </option>
+                        </select>
 
                         <label>Tipo*</label>
-                        <select id="tipo" name="tipoTransferenciaId" required
+                        <select id="tipo" name="tipoTransferenciaId" th:field="*{tipoTransferenciaId}" required
                             style="padding-bottom: 1rem; margin-bottom: 1rem;">
                             <option value="" disabled selected>Selecciona un tipo</option>
                             <option th:each="t : ${tiposTransferencia}" th:value="${t.id}" th:text="${t.name}">
                             </option>
                         </select>
 
-                        <label>Categoria*</label>
-                        <select id="categoria" name="categoriaTransferenciaId" required
-                            style="padding-bottom: 1rem; margin-bottom: 1rem;">
-                            <option value="" disabled selected>Selecciona una categoría</option>
-                            <option th:each="c : ${categoriaTransferencia}" th:value="${c.id}" th:text="${c.name}">
-                            </option>
-                        </select>
-
                         <label>Cantidad*</label>
                         <input id="cantidad" type="number" name="cantidad" step="0.01" min="0" inputmode="decimal"
-                            style="margin-bottom: 1rem;" required />
+                            th:field="*{cantidad}" style="margin-bottom: 1rem;" required />
 
                         <label>Descripcion</label>
-                        <input id="descripcion" type="text" name="descripcion" style="margin-bottom: 1rem;" />
+                        <input id="descripcion" type="text" name="descripcion" style="margin-bottom: 1rem;"
+                            th:field="*{descripcion}" />
 
-                        <button type="submit">Crear Transaccion</button>
+                        <button type="submit">Editar Transaccion</button>
                     </form>
+
+                    <div style="display:flex; align-items: center; justify-content: center; width: 100%;">
+
+                        <button type="button" onclick="goToTransacciones()">Crear Nueva Transaccion</button>
+
+                        <form th:action="@{'/transacciones/edit/' + ${transaccion.id} + '/delete'}" method="post"
+                            style="display:inline;">
+                            <button type="submit" onclick="return confirm('¿Eliminar la transacción?')">Eliminar Transaccion</button>
+                        </form>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -121,7 +144,7 @@
 <script th:src="@{/js/navText.js}"></script>
 <script th:src="@{/js/navigate.js}"></script>
 
-
+<!-- Clickable en table-->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const rows = document.querySelectorAll('.row-selectable');
@@ -135,4 +158,5 @@
         });
     });
 </script>
+
 </html>

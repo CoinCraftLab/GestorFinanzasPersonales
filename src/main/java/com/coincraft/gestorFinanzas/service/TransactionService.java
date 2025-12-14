@@ -1,14 +1,9 @@
 package com.coincraft.gestorFinanzas.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.coincraft.gestorFinanzas.dto.transactionDTO.CreateTransactionDTO;
 import com.coincraft.gestorFinanzas.dto.transactionDTO.TransactionResponseDTO;
@@ -28,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransactionService {
 
-
     // Repositorios necesarios para buscar datos en la BD
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
@@ -36,22 +30,22 @@ public class TransactionService {
     private final CategoriaTransferenciaRepository categoriaTransferenciaRepository;
 
     //1. CREAR TRANSACCIÓN
-    public TransactionResponseDTO crearTransaccion(CreateTransactionDTO dto){
+    public TransactionResponseDTO crearTransaccion(CreateTransactionDTO dto) {
 
         //Buscar el usuario
         User user = getAuthenticatedUser();
 
         //Buscar el tipo de transferencia
         TipoTransferencia tipo = tipoTransferenciaRepository.findById(dto.getTipoTransferenciaId())
-            .orElseThrow(() -> new RuntimeException("Tipo de transferencia no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Tipo de transferencia no encontrado"));
 
         //Buscar la categoría de la transferencia
         CategoriaTransferencia categoria = categoriaTransferenciaRepository.findById(
-            dto.getCategoriaTransferenciaId()).orElseThrow(() -> new RuntimeException(
+                dto.getCategoriaTransferenciaId()).orElseThrow(() -> new RuntimeException(
                 "Categoría no encontrada"));
 
         //Convertir la fecha de String a LocalDateTime
-        LocalDateTime fecha = LocalDateTime.parse(dto.getFechaTransaccion());
+        LocalDate fecha = dto.getFechaTransaccion();
 
         //Crear la entidad transaccion
         Transaccion transaccion = Transaccion.builder()
@@ -70,45 +64,39 @@ public class TransactionService {
         return convertirAResponseDTO(transGuardada);
     }
 
-
-
-
     //2. OBTENER TRANSACCIÓN
-    public TransactionResponseDTO obtenerTransaccion(Long id){
+    public TransactionResponseDTO obtenerTransaccion(Long id) {
         Transaccion transaccion = transactionRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
 
         return convertirAResponseDTO(transaccion);
     }
 
-
-
-
     //3. EDITAR LA TRANSACCIÓN
-    public TransactionResponseDTO editarTransaccion(Long id, UpdateTransactionDTO dto){
+    public TransactionResponseDTO editarTransaccion(Long id, UpdateTransactionDTO dto) {
 
         //Buscar la transaccion
         Transaccion transaccion = transactionRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
 
         //Actualizar tipo
-        if(dto.getTipoTransferenciaId() != null){
+        if (dto.getTipoTransferenciaId() != null) {
             TipoTransferencia tipo = tipoTransferenciaRepository.findById(dto.getTipoTransferenciaId())
-                .orElseThrow(() -> new RuntimeException("Tipo no encontrado"));
+                    .orElseThrow(() -> new RuntimeException("Tipo no encontrado"));
             transaccion.setTipoTransferencia(tipo);
         }
 
         //Actualizar categoria
-        if(dto.getCategoriaTransferenciaId() != null){
+        if (dto.getCategoriaTransferenciaId() != null) {
             CategoriaTransferencia categoria = categoriaTransferenciaRepository.findById(
-                dto.getCategoriaTransferenciaId()).orElseThrow(() -> new RuntimeException(
+                    dto.getCategoriaTransferenciaId()).orElseThrow(() -> new RuntimeException(
                     "Categoría no encontrada"));
             transaccion.setCategoriaTransferencia(categoria);
         }
 
         //Actualizar fecha
         if (dto.getFechaTransaccion() != null) {
-            LocalDateTime fecha = LocalDateTime.parse(dto.getFechaTransaccion());
+            LocalDate fecha = dto.getFechaTransaccion();
             transaccion.setFechaTransaccion(fecha);
         }
 
@@ -129,19 +117,13 @@ public class TransactionService {
 
     }
 
-
-
-
     //4. ELIMINAR TRANSACCIÓN
-    public void eliminarTransaccion(Long id){
-        if(!transactionRepository.existsById(id)){
+    public void eliminarTransaccion(Long id) {
+        if (!transactionRepository.existsById(id)) {
             throw new RuntimeException("Transacción no encontrada");
         }
         transactionRepository.deleteById(id);
     }
-
-
-
 
     //Método auxiliar: convierte una entidad en DTO
     private TransactionResponseDTO convertirAResponseDTO(Transaccion t) {
@@ -153,7 +135,7 @@ public class TransactionService {
         dto.setTipoTransferenciaNombre(t.getTipoTransferencia().getName());  // suponiendo que tiene getNombre()
         dto.setCategoriaTransferenciaId(t.getCategoriaTransferencia().getId());
         dto.setCategoriaTransferenciaNombre(t.getCategoriaTransferencia().getName());
-        dto.setFechaTransaccion(t.getFechaTransaccion().toString());
+        dto.setFechaTransaccion(t.getFechaTransaccion());
         dto.setCantidad(t.getCantidad());
         dto.setDescripcion(t.getDescription());
 
@@ -161,6 +143,7 @@ public class TransactionService {
     }
 
     //Metodo para devolver al user autenticado 
+    /* 
     private User getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof UserDetails details)) {
@@ -169,4 +152,21 @@ public class TransactionService {
         return userRepository.findByEmail(details.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
+     */
+    //Metodo para devolver siempre el user 1
+    private User getAuthenticatedUser() {
+        return userRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Usuario fijo (id=1) no encontrado"));
+    }
+
+    //Metodo de Seteo Hardodeado para el historial de transacciones 
+    public List<TransactionResponseDTO> listarHistorialUsuarioFijo(){
+        Long userId = 1L;
+        return transactionRepository.findByUserIdOrderByFechaTransaccionDesc(userId)
+                .stream()
+                .map(this::convertirAResponseDTO)
+                .toList();
+    } 
+
 }
