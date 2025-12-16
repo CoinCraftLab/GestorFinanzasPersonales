@@ -1,5 +1,7 @@
 package com.coincraft.gestorFinanzas.dto.transactionDTO;
 
+import java.time.LocalDate;
+
 import lombok.Data;
 
 
@@ -20,7 +22,7 @@ import lombok.Data;
 public class CreateTransactionDTO {
     private Long tipoTransferenciaId;
     private Long categoriaTransferenciaId;
-    private String fechaTransaccion;//Luego se convertirá a a LocalDateTime en el service
+    private LocalDate fechaTransaccion;
     private Double cantidad;
     private String descripcion;
 }

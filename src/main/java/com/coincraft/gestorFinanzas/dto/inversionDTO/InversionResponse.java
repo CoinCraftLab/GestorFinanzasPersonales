@@ -1,8 +1,8 @@
 package com.coincraft.gestorFinanzas.dto.inversionDTO;
 
-import com.coincraft.gestorFinanzas.model.Inversion;
-
 import java.time.LocalDateTime;
+
+import com.coincraft.gestorFinanzas.model.Inversion;
 
 /*
     - DTO para la respuesta al metodo crearInversion() Pantalla 2.

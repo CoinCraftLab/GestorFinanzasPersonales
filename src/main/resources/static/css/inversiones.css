@@ -1,0 +1,243 @@
+/* Contenedor principal del portfolio */
+.portfolio-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4rem;
+    padding: 2rem 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Sección del gráfico (izquierda) */
+.chart-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 400px;
+    height: 400px;
+}
+
+/* Texto central del gráfico */
+.chart-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.balance-label {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.balance-amount {
+    margin: 0.5rem 0 0 0;
+    font-size: 2rem;
+    color: #000;
+    font-weight: 700;
+}
+
+/* Sección de activos (derecha) */
+.assets-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Card de cada activo */
+.asset-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.asset-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Header del activo */
+.asset-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.asset-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+}
+
+.asset-title {
+    flex: 1;
+}
+
+.asset-ticker {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.asset-cantidad {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Valor y porcentaje */
+.asset-value {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.asset-price {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+}
+
+.asset-change {
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.asset-change.positive {
+    background-color: #d4edda;
+    color: #28a745;
+}
+
+.asset-change.negative {
+    background-color: #f8d7da;
+    color: #dc3545;
+}
+
+/* Sección expandida (detalles adicionales) */
+.asset-details {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.detail-label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #000;
+    font-size: 0.9rem;
+}
+
+/* Botones de acción */
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 2rem 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-base);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+    background-color: #8b7b9e;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7a6a8d;
+}
+
+.btn-danger {
+    background-color: #c77b7b;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #b66a6a;
+}
+
+.btn-success {
+    background-color: #7bc77b;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #6ab66a;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .portfolio-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .assets-section {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

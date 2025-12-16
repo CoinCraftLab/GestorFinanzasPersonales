@@ -12,11 +12,28 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebInversionController {
 
+    //Pantalla principal (Portfolio). Pantalla 1
     @GetMapping("/inversiones")
     public String getToInversiones(Model model) {
-        model.addAttribute("mensaje", "Texto plano desde el controller (inversiones)");
         return "public/inversiones/inversiones";
     }
 
+    //Pantalla de crear inversión. Pantalla 2
+    @GetMapping("/inversiones/crear")
+    public String getToCrearInversion(Model model) {
+        return "public/inversiones/crear";
+    }
+
+    //Pantalla de vender inversión. Pantalla 3
+    @GetMapping("/inversiones/vender")
+    public String getToVenderInversion(Model model) {
+        return "public/inversiones/vender";
+    }
+
+    //Pantalla de historial. Pantalla 4
+    @GetMapping("/inversiones/historial")
+    public String getToHistorial(Model model) {
+        return "public/inversiones/historial";
+    }
     
 }

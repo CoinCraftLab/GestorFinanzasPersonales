@@ -33,14 +33,22 @@ public class InversionService {
     private final InversionRepository inversionRepository;
     private final ActivoFinancieroRepository activoFinancieroRepository;
 
-    //Autenticación del usuario
+    //Metodo para devolver al user autenticado
+    /*
     private User getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof UserDetails details)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado");
         }
         return userRepository.findByEmail(details.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+     */
+    //Metodo para devolver siempre el user 1
+    private User getAuthenticatedUser() {
+        return userRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Usuario fijo (id=1) no encontrado"));
     }
 
     //Calcular balance. Pantalla 1 y pantalla 4
@@ -76,20 +84,18 @@ public class InversionService {
                 resumen.setValorInvertido(resumen.getValorInvertido() + valorOperacion);
             } else { //Venta
                 resumen.setCantidad(resumen.getCantidad() - inv.getCantidad());
-                resumen.setValorInvertido(resumen.getValorInvertido() - valorOperacion);
             }
         }
 
         for (ActivoResumenDTO resumen : activosMap.values()) {
             if (resumen.getCantidad() > 0) {
-                List<Inversion> invsActivo = inversiones.stream()
-                        .filter(i -> i.getActivoFinanciero().getId().equals(resumen.getActivoId()))
-                        .sorted((a, b) -> b.getFechaTransaccion().compareTo(a.getFechaTransaccion()))
-                        .toList();
+                //Obtiene el activo financiero para acceder al precio actual
+                ActivoFinanciero activo = activoFinancieroRepository.findById(resumen.getActivoId())
+                        .orElse(null);
 
-                if (!invsActivo.isEmpty()) {
-                    double ultimoPrecio = invsActivo.get(0).getPrecio();
-                    resumen.setValorActual(resumen.getCantidad() * ultimoPrecio);
+                if (activo != null && activo.getValorActual() != null) {
+                    //Usa el valorActual del activo
+                    resumen.setValorActual(resumen.getCantidad() * activo.getValorActual());
                     balanceTotal += resumen.getValorActual();
                 }
             }

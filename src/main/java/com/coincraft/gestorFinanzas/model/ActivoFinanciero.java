@@ -3,6 +3,7 @@ package com.coincraft.gestorFinanzas.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,9 +50,11 @@ public class ActivoFinanciero {
     private CategoriaActivoFinanciero categoriaActivoFinanciero;
 
     @OneToMany(mappedBy="activoFinanciero", cascade = CascadeType.ALL, orphanRemoval=true)
+    @JsonIgnore
     private List<Inversion> inversion;
 
     @OneToMany(mappedBy="activoFinanciero", cascade = CascadeType.ALL, orphanRemoval=true)
+    @JsonIgnore
     private List<HistoricoValorActivoFinanciero> historicoValorActivoFinanciero;
 
 

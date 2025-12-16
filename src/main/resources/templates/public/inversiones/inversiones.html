@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <title>Inversiones</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/inversiones.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -46,7 +48,32 @@
     </div>
 
     <div class="contenido">
-        <p th:text="${mensaje}">Mensaje de prueba</p>
+        <div class="portfolio-container">
+            <!-- Sección izquierda: Gráfico de dona -->
+            <div class="chart-section">
+                <div class="chart-wrapper">
+                    <canvas id="portfolioChart"></canvas>
+                    <div class="chart-center">
+                        <p class="balance-label">Balance</p>
+                        <p class="balance-amount" id="balanceTotal">0€</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección derecha: Lista de activos -->
+            <div class="assets-section">
+                <div id="assetsList">
+                    <p class="loading">Cargando portfolio...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones inferiores -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="goToHistorial()">Listado Activos</button>
+            <button class="btn btn-danger" onclick="goToVenta()">Venta Inversión</button>
+            <button class="btn btn-success" onclick="goToCompra()">Compra Inversión</button>
+        </div>
     </div>
 
 </body>
@@ -55,4 +82,5 @@
 <!--Script-->
 <script th:src="@{/js/navText.js}"></script>
 <script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/inversiones.js}"></script>
 </html>

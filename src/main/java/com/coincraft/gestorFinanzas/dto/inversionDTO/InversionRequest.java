@@ -1,9 +1,9 @@
 package com.coincraft.gestorFinanzas.dto.inversionDTO;
 
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-
-import java.time.LocalDateTime;
 
 /*
     - Contiene los datos que envía el front.
