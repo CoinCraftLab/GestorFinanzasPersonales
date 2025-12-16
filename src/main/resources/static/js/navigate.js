@@ -22,6 +22,19 @@ function goToPerfil(){
   window.location.href = '/perfil';
 }
 
+function goToHistorial(){
+  window.location.href = '/inversiones/historial';
+}
+
+function goToVenta(){
+  window.location.href = '/inversiones/vender';
+}
+
+function goToCompra(){
+  window.location.href = '/inversiones/crear';
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // Los links funcionand direcamtente con el onclick no hace falta esto pero lo dejo por si acaso 
   /*

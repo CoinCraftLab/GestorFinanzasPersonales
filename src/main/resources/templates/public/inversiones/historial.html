@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Cartera Activos</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/historial.css}">
+</head>
+
+<body>
+<div class="navbar">
+    <img th:src="@{/img/LogoHorizontal.png}" style="width:15vw;">
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonInicio" onclick="goToIndex()">Inicio</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInicio" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonTransacciones" onclick="goToTransacciones()">Transacciones</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgTransacciones" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonRetos" onclick="goToRetos()">Retos</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgRetos" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonInversiones" onclick="goToInversiones()">Inversiones</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInversiones" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonPresupuestos" onclick="goToPresupuesto()">Presupuestos</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPresupuesto" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonPerfil" onclick="goToPerfil()">Perfil</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPerfil" style="width: 2rem; display:none">
+    </div>
+
+    <p id="textoPruebaRuta" style="position:absolute; top:-2.5rem; right:20.5rem; color: rgb(160, 167, 164);"></p>
+</div>
+
+<div class="contenido">
+    <div class="historial-container">
+        <!-- Sección izquierda: Listado de activos en cartera -->
+        <div class="activos-section">
+            <h2>Listado Activos en Cartera</h2>
+            <div id="activosLista" class="activos-lista">
+                <p class="loading">Cargando activos...</p>
+            </div>
+        </div>
+
+        <!-- Sección derecha: Historial de movimientos -->
+        <div class="movimientos-section">
+            <h2>Historial de movimientos</h2>
+            <div class="tabla-container">
+                <table id="tablaHistorial" class="tabla-historial">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Categoría</th>
+                        <th>Activo</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                    </tr>
+                    </thead>
+                    <tbody id="historialBody">
+                    <tr>
+                        <td colspan="6" class="loading">Cargando historial...</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones inferiores -->
+    <div class="action-buttons">
+        <button class="btn btn-secondary" onclick="goToInversiones()">Inversiones</button>
+        <button class="btn btn-danger" onclick="goToVenta()">Venta Inversión</button>
+        <button class="btn btn-success" onclick="goToCompra()">Compra Inversión</button>
+    </div>
+</div>
+
+<!-- Modal para editar/eliminar inversión -->
+<div id="modalEditar" class="modal">
+    <div class="modal-content modal-editar">
+        <h3>Editar inversión</h3>
+        <form id="formEditar" onsubmit="guardarEdicion(event)">
+            <div class="form-group">
+                <label for="editTipo">Tipo <span style="color:red">*</span></label>
+                <input type="text" id="editTipo" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="editActivo">Activo <span style="color:red">*</span></label>
+                <input type="text" id="editActivo" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="editPrecio">Precio <span style="color:red">*</span></label>
+                <input type="number" id="editPrecio" step="0.01" min="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editCantidad">Cantidad <span style="color:red">*</span></label>
+                <input type="number" id="editCantidad" step="0.0001" min="0.0001" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editFecha">Fecha <span style="color:red">*</span></label>
+                <input type="date" id="editFecha" required>
+            </div>
+
+            <div id="mensajeErrorEdit" class="mensaje-error" style="display:none;"></div>
+            <div id="mensajeExitoEdit" class="mensaje-exito" style="display:none;"></div>
+
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-secondary" onclick="cerrarModalEditar()">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="confirmarEliminar()">Eliminar</button>
+                <button type="submit" class="btn btn-success">Editar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/js/navText.js}"></script>
+<script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/historial.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Comprar Inversión</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/formulario-inversion.css}">
+</head>
+
+<body>
+<div class="navbar">
+    <img th:src="@{/img/LogoHorizontal.png}" style="width:15vw;">
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonInicio" onclick="goToIndex()">Inicio</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInicio" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonTransacciones" onclick="goToTransacciones()">Transacciones</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgTransacciones" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonRetos" onclick="goToRetos()">Retos</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgRetos" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonInversiones" onclick="goToInversiones()">Inversiones</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInversiones" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonPresupuestos" onclick="goToPresupuesto()">Presupuestos</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPresupuesto" style="width: 2rem; display:none">
+    </div>
+
+    <div class="navbarTextMiniLogo">
+        <p class="navButton" id="navButtonPerfil" onclick="goToPerfil()">Perfil</p>
+        <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPerfil" style="width: 2rem; display:none">
+    </div>
+
+    <p id="textoPruebaRuta" style="position:absolute; top:-2.5rem; right:20.5rem; color: rgb(160, 167, 164);"></p>
+</div>
+
+<div class="contenido">
+    <div class="form-container">
+        <!-- Formulario izquierda -->
+        <div class="form-section">
+            <form id="formCompra" onsubmit="enviarCompra(event)">
+
+                <div class="form-group">
+                    <label for="activo">Activo <span style="color:red">*</span></label>
+                    <select id="activo" required>
+                        <option value="">Selecciona un activo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="precio">Precio de compra <span style="color:red">*</span></label>
+                    <input type="number" id="precio" step="0.01" min="0.01" required placeholder="0.00€">
+                </div>
+
+                <div class="form-group">
+                    <label for="cantidad">Cantidad <span style="color:red">*</span></label>
+                    <input type="number" id="cantidad" step="0.0001" min="0.0001" required placeholder="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha">Fecha de compra <span style="color:red">*</span></label>
+                    <input type="date" id="fecha" required>
+                </div>
+
+                <div id="mensajeError" class="mensaje-error" style="display:none;"></div>
+                <div id="mensajeExito" class="mensaje-exito" style="display:none;"></div>
+            </form>
+        </div>
+
+        <!-- Botón circular derecha -->
+        <div class="button-section">
+            <button type="submit" form="formCompra" class="btn-circular btn-compra">
+                Compra
+            </button>
+        </div>
+    </div>
+
+    <!-- Botones inferiores -->
+    <div class="action-buttons">
+        <button class="btn btn-secondary" onclick="goToHistorial()">Listado Activos</button>
+        <button class="btn btn-danger" onclick="goToVenta()">Venta Inversión</button>
+        <button class="btn btn-success" onclick="goToInversiones()">Compra Inversión</button>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/js/navText.js}"></script>
+<script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/crear-inversion.js}"></script>
+</body>
+
+</html>
