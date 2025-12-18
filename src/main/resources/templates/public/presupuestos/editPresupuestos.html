@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Edit Presupuestos</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body>
+    <div class="navbar">
+        <img th:src="@{/img/LogoHorizontal.png}" style="width:15vw;">
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonInicio" onclick="goToIndex()">Inicio</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInicio" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonTransacciones" onclick="goToTransacciones()">Transacciones</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgTransacciones" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonRetos" onclick="goToRetos()">Retos</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgRetos" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonInversiones" onclick="goToInversiones()">Inversiones</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInversiones" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonPresupuestos" onclick="goToPresupuesto()">Presupuestos</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPresupuesto" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonPerfil" onclick="goToPerfil()">Perfil</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPerfil" style="width: 2rem; display:none">
+        </div>
+
+        <p id="textoPruebaRuta"
+            style="position:absolute; top:-2.5rem; right:20.5rem; color: rgb(160, 167, 164);"></p>
+    </div>
+
+    <div class="contenido" style="max-width: 1200px; margin: 0 auto;">
+
+        <!-- Botón volver (NUEVO) -->
+        <div style="margin-top: 1.2rem; display:flex; justify-content:flex-end;">
+            <a th:href="@{/presupuestos(userId=${selectedUserId})}"
+                style="text-decoration:none; padding:.7rem 1rem; border-radius: .9rem; border:1px solid rgb(210,210,210);
+                        background: white; color: rgb(20,20,20); font-weight:700;">
+                Volver a Presupuestos
+            </a>
+        </div>
+
+        <!-- Selector de usuario -->
+        <section style="margin-top: 1.5rem; padding: 1rem; border: 1px solid rgb(220,220,220); border-radius: 1rem; background: white;">
+            <h2 style="margin:0; font-size: 1.4rem; font-weight: 700;">Seleccionar usuario</h2>
+
+            <div style="margin-top: .8rem; display:flex; gap: 1rem; align-items:center;">
+                <select id="userSelect"
+                        style="padding:.6rem .7rem; border-radius:.7rem; border:1px solid rgb(210,210,210); min-width: 420px;">
+                    <option value="" th:selected="${selectedUserId == null}">-- Selecciona usuario --</option>
+                    <option th:each="u : ${usuarios}"
+                            th:value="${u.id}"
+                            th:selected="${selectedUserId != null and selectedUserId == u.id}"
+                            th:text="${u.name + ' (' + u.email + ')'}">
+                    </option>
+                </select>
+
+                <button id="btnLoadUser" type="button"
+                        style="cursor:pointer; padding:.7rem 1rem; border-radius: .9rem; border:1px solid rgb(210,210,210); background: rgb(20,20,20); color:white; font-weight:700;">
+                    Cargar
+                </button>
+            </div>
+        </section>
+
+        <!-- LISTADO SUPERIOR -->
+        <section style="margin-top: 1.5rem; padding: 1.2rem; border: 1px solid rgb(220,220,220); border-radius: 1rem; background: white;">
+            <h2 style="margin:0; font-size: 2rem; font-weight: 700; text-align:center;">Presupuestos existentes</h2>
+
+            <div style="margin-top: 1rem; overflow:auto;">
+                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgb(235,235,235);">
+                            <th style="padding:.75rem .6rem;">Fecha</th>
+                            <th style="padding:.75rem .6rem;">Categoría</th>
+                            <th style="padding:.75rem .6rem;">Cantidad</th>
+                            <th style="padding:.75rem .6rem;">Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${presupuestos}" class="row-selectable"
+                            th:attr="data-id=${p.id}"
+                            style="cursor:pointer;">
+                            <td style="padding:.75rem .6rem;"
+                                th:text="${p.fechaTransaccion != null ? #temporals.format(p.fechaTransaccion,'yyyy-MM-dd HH:mm') : ''}">
+                            </td>
+                            <td style="padding:.75rem .6rem;" th:text="${p.categoriaTransferenciaName}"></td>
+                            <td style="padding:.75rem .6rem;" th:text="${p.cantidad}"></td>
+                            <td style="padding:.75rem .6rem;" th:text="${p.description}"></td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(presupuestos)}">
+                            <td colspan="4" style="padding:1rem; text-align:center; color: rgb(120,125,122);">
+                                Selecciona un usuario para ver sus presupuestos.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p id="selectedBudgetInfo" style="margin-top:.8rem; color: rgb(120,125,122); text-align:center;">
+                Ningún presupuesto seleccionado.
+            </p>
+        </section>
+
+        <!-- PROGRESO INFERIOR -->
+        <section style="margin-top: 1.5rem; padding: 1.2rem; border: 1px solid rgb(220,220,220); border-radius: 1rem; background: white;">
+            <h2 style="margin:0; font-size: 1.8rem; font-weight: 700;">Distribución por categorías</h2>
+
+            <div style="margin-top: 1rem; display:grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem;">
+                <div th:each="c : ${categoriaProgress}"
+                    style="border:1px solid rgb(235,235,235); border-radius: 1rem; padding: .9rem; display:flex; gap: .8rem; align-items:center;">
+
+                    <div style="width:70px; height:70px; position: relative;">
+                        <svg viewBox="0 0 36 36" style="width:70px; height:70px;">
+                            <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                fill="none" stroke="rgb(230,230,230)" stroke-width="3" />
+                            <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                fill="none" stroke="rgb(20,20,20)" stroke-width="3" stroke-linecap="round"
+                                th:attr="stroke-dasharray=${c.percent} + ', 100'" />
+                        </svg>
+                        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:700;">
+                            <span th:text="${c.percent}">0</span><span>%</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p style="margin:0; font-weight:700;" th:text="${c.name}">Ocio</p>
+                        <p style="margin:.2rem 0 0 0; color: rgb(100,105,102); font-size:.9rem;">del total</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES ABAJO IZQUIERDA -->
+            <div style="display:flex; gap: 1rem; margin-top: 1.2rem;">
+                <button id="btnOpenEditPanel" type="button"
+                    style="cursor:pointer; padding:.8rem 1rem; border-radius: .9rem; border:1px solid rgb(210,210,210); background: rgb(20,20,20); color:white; font-weight:700;">
+                    Editar presupuesto
+                </button>
+
+                <form id="formEliminarPresupuesto" method="post" style="margin:0;">
+                    <button type="submit"
+                        style="cursor:pointer; padding:.8rem 1rem; border-radius: .9rem; border:1px solid rgb(210,210,210); background: rgb(140,20,20); color:white; font-weight:700;">
+                        Eliminar presupuesto
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- PANEL DE EDICIÓN -->
+        <section id="editPanel"
+            style="display:none; margin-top: 1.5rem; padding: 1.2rem; border: 1px solid rgb(220,220,220); border-radius: 1rem; background: white;">
+            <div style="display:flex; justify-content: space-between; align-items:center; gap: 1rem;">
+                <h2 style="margin:0; font-size: 1.4rem; font-weight: 700;">Editar presupuesto seleccionado</h2>
+                <button id="btnCloseEditPanel" type="button"
+                    style="cursor:pointer; border:1px solid rgb(220,220,220); background:white; border-radius:.8rem; padding:.4rem .7rem;">
+                    Cerrar
+                </button>
+            </div>
+
+            <form id="editForm" method="post" style="margin-top: 1rem; display:flex; flex-direction:column; gap: .8rem;">
+                <input type="hidden" id="editUserId" name="userId" value="" />
+
+                <div style="display:flex; flex-direction:column; gap:.3rem;">
+                    <label style="font-weight:600;">Nombre Presupuesto*</label>
+                    <input id="editNombre" name="nombrePresupuesto" type="text" required
+                            style="padding:.6rem .7rem; border-radius:.7rem; border:1px solid rgb(210,210,210);" />
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:.3rem;">
+                    <label style="font-weight:600;">Cantidad mensual*</label>
+                    <input id="editCantidad" name="cantidadMensual" type="number" min="0" step="0.01" inputmode="decimal" required
+                            style="padding:.6rem .7rem; border-radius:.7rem; border:1px solid rgb(210,210,210);" />
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:.3rem;">
+                    <label style="font-weight:600;">Tipo de Presupuesto*</label>
+                    <select id="editTipo" name="tipoPresupuesto" required
+                            style="padding:.6rem .7rem; border-radius:.7rem; border:1px solid rgb(210,210,210);">
+                        <option value="" disabled selected>Selecciona tipo</option>
+                        <option value="GASTO">Gasto</option>
+                        <option value="INGRESO">Ingreso</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:.3rem;">
+                    <label style="font-weight:600;">Categorías asociadas*</label>
+                    <select id="editCategorias" name="categoriasAsociadasIds" multiple required size="6"
+                            style="padding:.6rem .7rem; border-radius:.7rem; border:1px solid rgb(210,210,210);">
+                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                    </select>
+                    <small style="color: rgb(100,105,102);">En edición se guardará la primera categoría seleccionada.</small>
+                </div>
+
+                <button type="submit"
+                    style="cursor:pointer; padding:.8rem 1rem; border-radius: .9rem; border:1px solid rgb(210,210,210); background: rgb(20,20,20); color:white; font-weight:700;">
+                    Guardar cambios
+                </button>
+            </form>
+        </section>
+
+        <div style="margin-top: 2rem; color: rgb(120,125,122);">
+            <p th:text="${mensaje}">Mensaje</p>
+        </div>
+    </div>
+
+    <script th:src="@{/js/navText.js}"></script>
+    <script th:src="@{/js/navigate.js}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const userSelect = document.getElementById('userSelect');
+            const btnLoadUser = document.getElementById('btnLoadUser');
+
+            btnLoadUser.addEventListener('click', () => {
+                const uid = userSelect.value;
+                if (!uid) {
+                    alert('Selecciona un usuario.');
+                    return;
+                }
+                window.location.href = `/presupuestos/edit?userId=${uid}`;
+            });
+
+            // Selección de presupuesto
+            const rows = document.querySelectorAll('.row-selectable');
+            const info = document.getElementById('selectedBudgetInfo');
+
+            let selectedId = null;
+
+            rows.forEach(row => {
+                row.addEventListener('click', () => {
+                    rows.forEach(r => r.classList.remove('selected'));
+                    row.classList.add('selected');
+                    selectedId = row.dataset.id;
+                    info.textContent = `Presupuesto seleccionado: ID ${selectedId}`;
+                });
+            });
+
+            // Eliminar
+            const formDelete = document.getElementById('formEliminarPresupuesto');
+            formDelete.addEventListener('submit', (e) => {
+                const uid = userSelect.value;
+                if (!uid) {
+                    e.preventDefault();
+                    alert('Selecciona un usuario primero.');
+                    return;
+                }
+                if (!selectedId) {
+                    e.preventDefault();
+                    alert('Selecciona un presupuesto primero.');
+                    return;
+                }
+                if (!confirm('¿Eliminar el presupuesto seleccionado?')) {
+                    e.preventDefault();
+                    return;
+                }
+                formDelete.action = `/presupuestos/edit/${selectedId}/delete?userId=${uid}`;
+            });
+
+            // Panel editar
+            const editPanel = document.getElementById('editPanel');
+            const btnOpenEditPanel = document.getElementById('btnOpenEditPanel');
+            const btnCloseEditPanel = document.getElementById('btnCloseEditPanel');
+            const editForm = document.getElementById('editForm');
+            const editUserId = document.getElementById('editUserId');
+
+            btnOpenEditPanel.addEventListener('click', () => {
+                const uid = userSelect.value;
+
+                if (!uid) {
+                    alert('Selecciona un usuario primero.');
+                    return;
+                }
+                if (!selectedId) {
+                    alert('Selecciona un presupuesto primero.');
+                    return;
+                }
+
+                editUserId.value = uid;
+                editForm.action = `/presupuestos/edit/${selectedId}`;
+                editPanel.style.display = 'block';
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            });
+
+            btnCloseEditPanel.addEventListener('click', () => {
+                editPanel.style.display = 'none';
+            });
+
+        });
+    </script>
+</body>
+
+</html>

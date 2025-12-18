@@ -31,127 +31,115 @@ public class PresupuestoService {
     private final UserRepository userRepository;
     private final CategoriaTransferenciaRepository categoriaTransferenciaRepository;
 
-
-    //Crear un nuevo presupuesto
-    public PresupuestoResponseDTO crearPresupuesto(PresupuestoRequestDTO dto){
-        //1. Buscamos el usuario al que pertenece este presupuesto
+    // Crear un nuevo presupuesto
+    public PresupuestoResponseDTO crearPresupuesto(PresupuestoRequestDTO dto) {
+        // 1. Buscamos el usuario al que pertenece este presupuesto
         User user = userRepository.findById(dto.getUserId())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-
-        //2. Buscamos la categoría de transferencia asociada
+        // 2. Buscamos la categoría de transferencia asociada
         CategoriaTransferencia categoria = categoriaTransferenciaRepository
-                        .findById(dto.getCategoriaTransferenciaId())
-                        .orElseThrow(() -> new RuntimeException("Categoría de transferencia no encontrada"));
+                .findById(dto.getCategoriaTransferenciaId())
+                .orElseThrow(() -> new RuntimeException("Categoría de transferencia no encontrada"));
 
-
-        //3. Si no nos pasan fecha, ponemos la fecha actual
+        // 3. Si no nos pasan fecha, ponemos la fecha actual
         LocalDateTime fecha = dto.getFechaTransaccion() != null ? dto.getFechaTransaccion() : LocalDateTime.now();
-    
-        
-        //4. Convertimos el DTO de entrada a la entidad Presupuesto
+
+        // 4. Convertimos el DTO de entrada a la entidad Presupuesto
         Presupuesto presupuesto = Presupuesto.builder()
-                        .user_id(user).categoriaTransferencia(categoria)
-                        .fechaTransaccion(fecha).cantidad(dto.getCantidad())
-                        .description(dto.getDescription()).build();
+                .user_id(user)
+                .categoriaTransferencia(categoria)
+                .fechaTransaccion(fecha)
+                .cantidad(dto.getCantidad())
+                .description(dto.getDescription())
+                .build();
 
-
-        //5. Guardamos en la BBDD
+        // 5. Guardamos en la BBDD
         Presupuesto guardado = presupuestoRepository.save(presupuesto);
 
-
-        //6. Devolvemos un DTO de respuesta
-        return convertirAResponseDTO(guardado); 
+        // 6. Devolvemos un DTO de respuesta
+        return convertirAResponseDTO(guardado);
     }
 
-
-    //Obtener un presupuesto por ID
-    public PresupuestoResponseDTO obtenerPorId(Long id){
+    // Obtener un presupuesto por ID
+    public PresupuestoResponseDTO obtenerPorId(Long id) {
         Presupuesto presupuesto = presupuestoRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Presupuesto no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Presupuesto no encontrado"));
 
         return convertirAResponseDTO(presupuesto);
     }
 
-
-    //Obtener todos los presupuestos de un usuario concreto
-    public List<PresupuestoResponseDTO> obtenerPorUsuario(Long userId){
+    // Obtener todos los presupuestos de un usuario concreto
+    public List<PresupuestoResponseDTO> obtenerPorUsuario(Long userId) {
         List<Presupuesto> presupuestos = presupuestoRepository.findByUserId(userId);
 
         return presupuestos.stream().map(this::convertirAResponseDTO).collect(Collectors.toList());
     }
 
-
-    //Obtener todos los presupuestos
-    public List<PresupuestoResponseDTO> obtenerTodos(){
-
+    // Obtener todos los presupuestos
+    public List<PresupuestoResponseDTO> obtenerTodos() {
         return presupuestoRepository.findAll().stream()
-                        .map(this::convertirAResponseDTO).collect(Collectors.toList());
+                .map(this::convertirAResponseDTO).collect(Collectors.toList());
     }
 
-
-    //Actualizar un presupuesto existente
-    public PresupuestoResponseDTO actualizarPresupuesto(Long id, PresupuestoRequestDTO dto){
+    // Actualizar un presupuesto existente
+    public PresupuestoResponseDTO actualizarPresupuesto(Long id, PresupuestoRequestDTO dto) {
         Presupuesto presupuesto = presupuestoRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Presupuesto no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Presupuesto no encontrado"));
 
-        //Actualizar solo los campos que nos lleguen en el DTO
-        if(dto.getUserId() != null){
+        // Actualizar solo los campos que nos lleguen en el DTO
+        if (dto.getUserId() != null) {
             User user = userRepository.findById(dto.getUserId())
-                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             presupuesto.setUser_id(user);
         }
 
-        if(dto.getCategoriaTransferenciaId() != null){
+        if (dto.getCategoriaTransferenciaId() != null) {
             CategoriaTransferencia categoria = categoriaTransferenciaRepository
-                        .findById(dto.getCategoriaTransferenciaId())
-                        .orElseThrow(() -> new RuntimeException
-                        ("Categoría de transferencia no encontrada"));
+                    .findById(dto.getCategoriaTransferenciaId())
+                    .orElseThrow(() -> new RuntimeException("Categoría de transferencia no encontrada"));
+
+            // ✅ CORRECCIÓN: asignar la categoría encontrada al presupuesto
+            presupuesto.setCategoriaTransferencia(categoria);
         }
 
-        if(dto.getFechaTransaccion() != null){
+        if (dto.getFechaTransaccion() != null) {
             presupuesto.setFechaTransaccion(dto.getFechaTransaccion());
         }
 
-        if(dto.getCantidad() != null){
+        if (dto.getCantidad() != null) {
             presupuesto.setCantidad(dto.getCantidad());
         }
 
-        if(dto.getDescription() != null){
+        if (dto.getDescription() != null) {
             presupuesto.setDescription(dto.getDescription());
         }
 
         Presupuesto actualizado = presupuestoRepository.save(presupuesto);
 
-
         return convertirAResponseDTO(actualizado);
     }
 
-
-    //Eliminar un presupuesto
-    public void eliminarPresupuesto(Long id){
-        if(!presupuestoRepository.existsById(id)){
+    // Eliminar un presupuesto
+    public void eliminarPresupuesto(Long id) {
+        if (!presupuestoRepository.existsById(id)) {
             throw new RuntimeException("Presupuesto no encontrado");
         }
 
         presupuestoRepository.deleteById(id);
     }
 
-
-
-    //Convertir la entidad Presupuesto a un DTO de respuesta
-    private PresupuestoResponseDTO convertirAResponseDTO(Presupuesto presupuesto){
+    // Convertir la entidad Presupuesto a un DTO de respuesta
+    private PresupuestoResponseDTO convertirAResponseDTO(Presupuesto presupuesto) {
 
         return PresupuestoResponseDTO.builder()
-                    .id(presupuesto.getId())
-                    .userId(presupuesto.getUser_id().getId())
-                    .categoriaTransferenciaId(presupuesto.getCategoriaTransferencia().getId())
-                    .categoriaTransferenciaName(presupuesto.getCategoriaTransferencia().getName())
-                    .fechaTransaccion(presupuesto.getFechaTransaccion())
-                    .cantidad(presupuesto.getCantidad())
-                    .description(presupuesto.getDescription())
-                    .build();
+                .id(presupuesto.getId())
+                .userId(presupuesto.getUser_id().getId())
+                .categoriaTransferenciaId(presupuesto.getCategoriaTransferencia().getId())
+                .categoriaTransferenciaName(presupuesto.getCategoriaTransferencia().getName())
+                .fechaTransaccion(presupuesto.getFechaTransaccion())
+                .cantidad(presupuesto.getCantidad())
+                .description(presupuesto.getDescription())
+                .build();
     }
-
-    
 }
