@@ -86,7 +86,7 @@
             <div class="retos-scroll-container">
                 <div class="retos-row">
                     <div class="reto-card" th:each="reto : ${listaRetos}"
-                         th:onclick="'irADetalleReto(' + ${reto.retoId} + ')'">
+                            th:onclick="'irADetalleReto(' + ${reto.retoId} + ')'">
                         <div class="circle">
                             <span th:text="${reto.predefinido} ? '100%' : ${reto.porcentajeCompletado} + '%'"></span>
                         </div>

@@ -80,14 +80,12 @@
                 <div class="tabla-container">
                     <table class="tabla-historial">
                         <thead>
-                            <tr th:each="row: ${historicoTransferencias}">
-                                <td class="col-fecha"
-                                    th:text="${#temporals.format(row.fechaTransaccion, 'dd/MM/yyyy')}"></td>
-                                <td class="col-categoria" th:text="${row.categoriaTransferenciaNombre}"></td>
-                                <td class="col-cantidad" th:text="${#numbers.formatDecimal(row.cantidad, 1, 2)} + ' €'">
-                                </td>
-                                <td class="col-descripcion" th:text="${row.descripcion}" th:title="${row.descripcion}">
-                                </td>
+                            <tr>
+                            <th class="col-fecha">Fecha</th>
+                            <th class="col-categoria">Categoria</th>
+                            <th class="col-tipo">Tipo</th>
+                            <th class="col-cantidad">Cantidad</th>
+                            <th class="col-descripcion">Información</th>
                             </tr>
                         </thead>
                         <tbody id="historialBody">

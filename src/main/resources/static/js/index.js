@@ -43,15 +43,14 @@ async function cargarDashboard() {
         const totalInversiones = portfolio.balanceTotal || 0;
         const totalRetos = calcularTotalRetos(retos);
         const { ahorro, liquido } = calcularAhorroYLiquido(transacciones);
-        const balanceTotal = totalInversiones + totalRetos + ahorro + liquido;
+        const balanceTotal = totalInversiones + ahorro + liquido;
 
         // Renderizar todo
         renderizarBalance(balanceTotal);
         renderizarGraficoCircular({
             inversiones: totalInversiones,
             ahorro: ahorro,
-            liquido: liquido,
-            retos: totalRetos
+            liquido: liquido
         });
         renderizarGraficosLinea(transacciones);
         renderizarPresupuestos(presupuestos);
@@ -105,13 +104,12 @@ function renderizarGraficoCircular(datos) {
         balanceChart.destroy();
     }
 
-    const labels = ['Inversiones', 'Ahorro', 'Liquido', 'Retos'];
-    const valores = [datos.inversiones, datos.ahorro, datos.liquido, datos.retos];
+    const labels = ['Inversiones', 'Ahorro', 'Liquido'];
+    const valores = [datos.inversiones, datos.ahorro, datos.liquido];
     const colores = [
         MAIN_COLORS.inversiones,
         MAIN_COLORS.ahorro,
         MAIN_COLORS.liquido,
-        MAIN_COLORS.retos
     ];
 
     balanceChart = new Chart(ctx, {
@@ -150,7 +148,6 @@ function renderizarGraficoCircular(datos) {
     document.getElementById('inversionesValue').textContent = formatCurrency(datos.inversiones);
     document.getElementById('ahorroValue').textContent = formatCurrency(datos.ahorro);
     document.getElementById('liquidoValue').textContent = formatCurrency(datos.liquido);
-    document.getElementById('retosValue').textContent = formatCurrency(datos.retos);
 }
 
 // Renderizar gráficos de línea (Ahorro y Líquido)
