@@ -4,6 +4,7 @@
 <head>
     <title>Transacciones</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/transacciones.css}">
 </head>
 
 <body>
@@ -46,70 +47,107 @@
     </div>
 
     <div class="contenido">
-        <div class="divPartidoVertical">
+        <div class="transacciones-container">
+            <!-- Sección de historial (izquierda) -->
+            <div class="historial-section">
+                <h2>Historial de Transacciones</h2>
 
-            <div class="divVerticalLeft">
-                <p style="font-size:2.5rem; font-weight: 700;">Historial de Transacciones</p>
+                <!-- Filtros por mes y año -->
+                <div class="filtros-container">
+                    <select id="filtroMes" class="filtro-select">
+                        <option value="">Mes</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
 
-                <div class="tableCss">
-                    <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                    <select id="filtroAnio" class="filtro-select">
+                        <option value="">Año</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+
+                <!-- Tabla de transacciones -->
+                <div class="tabla-container">
+                    <table class="tabla-historial">
                         <thead>
-                            <tr style="gap:2rem; padding:2rem; justify-content: center; align-items: center;">
-                                <th class="thTable">Fecha</th>
-                                <th class="thTable">Categoria</th>
-                                <th class="thTable">Tipo</th>
-                                <th class="thTable">Cantidad</th>
-                                <th class="thTable">Descripcion</th>
-                            </tr>
+                        <tr>
+                            <th class="col-fecha">Fecha</th>
+                            <th class="col-categoria">Categoria</th>
+                            <th class="col-tipo">Tipo</th>
+                            <th class="col-cantidad">Cantidad</th>
+                            <th class="col-descripcion">Información</th>
+                        </tr>
                         </thead>
-                        <tbody class="">
-                            <tr th:each="row: ${historicoTransferencias}" class="row-selectable" th:attr="data-id=${row.id}">
-                                <td class="trTable" th:text="${row.fechaTransaccion}"></td>
-                                <td class="trTable" th:text="${row.categoriaTransferenciaNombre}"></td>
-                                <td class="trTable" th:text="${row.tipoTransferenciaNombre}"></td>
-                                <td class="trTable" th:text="${row.cantidad}"></td>
-                                <td class="trTable" th:text="${row.descripcion}"></td>
-                            </tr>
+                        <tbody id="historialBody">
+                        <tr th:each="row: ${historicoTransferencias}" th:attr="data-id=${row.id}" class="row-selectable">
+                            <td class="col-fecha" th:text="${#temporals.format(row.fechaTransaccion, 'dd/MM/yyyy')}"></td>
+                            <td class="col-categoria" th:text="${row.categoriaTransferenciaNombre}"></td>
+                            <td class="col-tipo" th:text="${row.tipoTransferenciaNombre}"
+                                th:classappend="${row.tipoTransferenciaNombre == 'Ingreso'} ? 'tipo-ingreso' : 'tipo-gasto'"></td>
+                            <td class="col-cantidad" th:text="${#numbers.formatDecimal(row.cantidad, 1, 2)} + '€'"></td>
+                            <td class="col-descripcion" th:text="${row.descripcion}" th:title="${row.descripcion}"></td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
-
             </div>
-            <div class="divVerticalRight">
-                <p style="font-size:2.5rem; font-weight: 700;">Añadir Transaccion</p>
-                <div style="width:700px; height:500px; display:flex; align-items:flex-start; justify-content: center;">
-                    <form method="post" style="display:flex; flex-direction: column; justify-content: center; width:100%;">
 
-                        <label>Fecha*</label>
-                        <input id="fecha" type="date" name="fechaTransaccion" style="margin-bottom: 1rem;" required />
+            <!-- Sección del formulario (derecha) -->
+            <div class="form-section">
+                <h2>Añadir Transaccion</h2>
 
-                        <label>Tipo*</label>
-                        <select id="tipo" name="tipoTransferenciaId" required
-                            style="padding-bottom: 1rem; margin-bottom: 1rem;">
-                            <option value="" disabled selected>Selecciona un tipo</option>
-                            <option th:each="t : ${tiposTransferencia}" th:value="${t.id}" th:text="${t.name}">
-                            </option>
-                        </select>
+                <div class="form-container-trans">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="fecha">Fecha*</label>
+                            <input id="fecha" type="date" name="fechaTransaccion" required />
+                        </div>
 
-                        <label>Categoria*</label>
-                        <select id="categoria" name="categoriaTransferenciaId" required
-                            style="padding-bottom: 1rem; margin-bottom: 1rem;">
-                            <option value="" disabled selected>Selecciona una categoría</option>
-                            <option th:each="c : ${categoriaTransferencia}" th:value="${c.id}" th:text="${c.name}">
-                            </option>
-                        </select>
+                        <div class="form-group">
+                            <label for="tipo">Tipo*</label>
+                            <select id="tipo" name="tipoTransferenciaId" required>
+                                <option value="" disabled selected>Selecciona un tipo</option>
+                                <option th:each="t : ${tiposTransferencia}" th:value="${t.id}" th:text="${t.name}"></option>
+                            </select>
+                        </div>
 
-                        <label>Cantidad*</label>
-                        <input id="cantidad" type="number" name="cantidad" step="0.01" min="0" inputmode="decimal"
-                            style="margin-bottom: 1rem;" required />
+                        <div class="form-group">
+                            <label for="categoria">Categoria*</label>
+                            <select id="categoria" name="categoriaTransferenciaId" required>
+                                <option value="" disabled selected>Selecciona una categoría</option>
+                                <option th:each="c : ${categoriaTransferencia}" th:value="${c.id}" th:text="${c.name}"></option>
+                            </select>
+                        </div>
 
-                        <label>Descripcion</label>
-                        <input id="descripcion" type="text" name="descripcion" style="margin-bottom: 1rem;" />
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad*</label>
+                            <input id="cantidad" type="number" name="cantidad" step="0.01" min="0"
+                                   inputmode="decimal" placeholder="0.00€" required />
+                        </div>
 
-                        <button type="submit">Crear Transaccion</button>
+                        <div class="form-group">
+                            <label for="descripcion">Informacion</label>
+                            <input id="descripcion" type="text" name="descripcion"
+                                   placeholder="Información adicional..." />
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Crear Transaccion</button>
+                        </div>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
@@ -120,6 +158,7 @@
 <!--Script-->
 <script th:src="@{/js/navText.js}"></script>
 <script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/transacciones.js}"></script>
 
 
 <script>
