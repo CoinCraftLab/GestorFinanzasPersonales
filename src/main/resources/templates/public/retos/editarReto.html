@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Retos</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/formulario-inversion.css}">
+    <link rel="stylesheet" th:href="@{/css/retos.css}">
 </head>
 
 <body>
@@ -46,36 +47,52 @@
 
     </div>
 
-    <div style="display:flex; flex-direction: column; justify-content: center; align-items: center;">
-        <p>Editar Reto</p>
-        <div style="width: 900px; height: 400px; border: 1px solid black; border-radius: 20px; background-color: white; display:flex; justify-content: center;  align-items: center; flex-direction: column;">
-            <form th:action="@{'/retos/editarReto/' + ${reto.retoId}}" method="post"
-                style="display:flex; flex-direction:column; gap:0.5rem; max-width:400px;">
-                <label>Nombre</label>
-                <input name="nombre" th:value="${reto.nombre}">
-                <label>Objetivo</label>
-                <input type="number" step="0.01" min="0" name="retoCantidad" th:value="${reto.retoCantidad}">
-                <label>Fecha fin</label>
-                <input type="date" name="fechaFin" th:value="${#temporals.format(reto.fechaFin, 'yyyy-MM-dd')}">
-                <label><input type="checkbox" name="predefinido" th:checked="${reto.predefinido}"> Predefinido</label>
-                <button type="submit">Actualizar</button>
-            </form>
+    <div class="contenido">
+        <div class="mover-dinero-container">
+            <h2>Editar Reto</h2>
+            <div class="modal-content" style="margin: 0 auto; animation: none;">
+                <form th:action="@{'/retos/editarReto/' + ${reto.retoId}}" method="post" style="display:flex; flex-direction:column; gap:1rem;">
+                    <div class="form-group">
+                        <label>Nombre Reto*</label>
+                        <input name="nombre" th:value="${reto.nombre}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cantidad Objetivo*</label>
+                        <input type="number" step="0.01" min="0" name="retoCantidad" th:value="${reto.retoCantidad}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha Objetivo*</label>
+                        <input type="date" name="fechaFin" th:value="${#temporals.format(reto.fechaFin, 'yyyy-MM-dd')}" required>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" name="predefinido" id="predefinido" th:checked="${reto.predefinido}">
+                        <label for="predefinido">Predefinido</label>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" th:onclick="'window.location.href=\'/retos/' + ${reto.retoId} + '\''">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Actualizar Reto</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <p>Lista de Retos</p>
-        
-
-                <div
-            style="width:1300px; height:220px; border:1px solid black; border-radius:20px; background-color:white; overflow-x:auto; overflow-y:hidden;">
-            <div class="retos-row">
-                <div class="reto-card" th:each="reto : ${listaRetos}"
-                    th:onclick="'window.location.href=\'/retos/' + ${reto.retoId} + '\''">
-                    <div class="circle"
-                        th:style="'background: conic-gradient(#4caf50 ' + (${reto.predefinido} ? 100 : ${reto.porcentajeCompletado}) + '%, #e0e0e0 0);'">
-                        <span th:text="${reto.predefinido} ? '100%' : ${reto.porcentajeCompletado} + '%'"></span>
+        <!-- Lista de Retos -->
+        <div class="lista-retos-section">
+            <h2>Lista de Retos</h2>
+            <div class="retos-scroll-container">
+                <div class="retos-row">
+                    <div class="reto-card" th:each="r : ${listaRetos}"
+                         th:onclick="'irADetalleReto(' + ${r.retoId} + ')'">
+                        <div class="circle">
+                            <span th:text="${r.predefinido} ? '100%' : ${r.porcentajeCompletado} + '%'"></span>
+                        </div>
+                        <p th:text="${r.nombre}"></p>
+                        <p th:text="${r.retoCantidadActual} + ' / ' + ${r.retoCantidad} + '€'"></p>
                     </div>
-                    <p th:text="${reto.nombre}"></p>
-                    <p th:text="${reto.retoCantidadActual} + ' / ' + ${reto.retoCantidad}"></p>
                 </div>
             </div>
         </div>
@@ -87,5 +104,6 @@
 <!--Script-->
 <script th:src="@{/js/navText.js}"></script>
 <script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/retos.js}"></script>
 
 </html>

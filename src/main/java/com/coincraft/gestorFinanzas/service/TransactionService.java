@@ -167,6 +167,18 @@ public class TransactionService {
                 .stream()
                 .map(this::convertirAResponseDTO)
                 .toList();
-    } 
+    }
+
+    //LISTAR LAS TRANSACCIONES DEL USUARIO
+    public List<TransactionResponseDTO> listarTransaccionesUsuario() {
+        User user = getAuthenticatedUser();
+
+        //Buscar todas las transacciones de ese usuario
+        return transactionRepository.findByUserIdOrderByFechaTransaccionDesc(user.getId())
+                .stream()
+                .map(this::convertirAResponseDTO)
+                .toList();
+    }
+
 
 }

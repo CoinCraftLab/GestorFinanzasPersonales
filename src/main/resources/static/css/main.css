@@ -11,7 +11,7 @@ body {
     font-family: var(--font-base);
     background-color: #fefff6;
     padding-left: 1rem; 
-    padding-top: 1rem;
+    padding-top: 60px;
     padding-bottom: 1rem;
     padding-right: 1rem;
 }
@@ -23,9 +23,9 @@ body {
     flex-direction: row;
     margin:0;
     gap:7rem;
-    position:sticky;
+    position:fixed;
     top:0;
-    width: 90vw;
+    width: 100%;
     font-size: 1.5rem;
 }
 
@@ -113,6 +113,7 @@ body {
     text-align:center; 
 }
 
+/* Para los gráficos circulares */
 .circle { 
     width:90px; 
     height:90px; 
@@ -121,7 +122,27 @@ body {
     align-items:center; 
     justify-content:center; 
     margin:0 auto 0.5rem;
+    position: relative;
 }
+
+.chart-center {
+    position: absolute;
+    text-align: center;
+    pointer-events: none; /* evita que bloquee clics en el card */
+    font-size: 0.7rem;
+    line-height: 1.2;
+}
+
+.balance-label {
+    font-size: 0.7rem;
+    color: #555;
+}
+
+.balance-amount {
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+/* ------------------ */
 
 .retos-row { 
     display:flex; 

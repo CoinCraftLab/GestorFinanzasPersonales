@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Index</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -46,7 +48,70 @@
     </div>
 
     <div class="contenido">
-        <p th:text="${mensaje}">Mensaje de prueba</p>
+        <div class="index-container">
+            <!-- Sección superior -->
+            <div class="top-section">
+                <!-- Balance y gráfico circular -->
+                <div class="balance-chart-section">
+                    <div class="balance-display">
+                        <h2>Balance</h2>
+                        <p class="amount" id="balanceTotal">0€</p>
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #4CAF50;"></div>
+                            <span class="legend-label">Inversiones</span>
+                            <span class="legend-value" id="inversionesValue">0€</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #F4E185;"></div>
+                            <span class="legend-label">Ahorro</span>
+                            <span class="legend-value" id="ahorroValue">0€</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #C77B7B;"></div>
+                            <span class="legend-label">Líquido</span>
+                            <span class="legend-value" id="liquidoValue">0€</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #7BC8E5;"></div>
+                            <span class="legend-label">Retos</span>
+                            <span class="legend-value" id="retosValue">0€</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos de línea -->
+                <div class="charts-section">
+                    <div class="line-chart-container">
+                        <h3>Ahorro</h3>
+                        <div class="chart-canvas">
+                            <canvas id="ahorroChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="line-chart-container">
+                        <h3>Líquido</h3>
+                        <div class="chart-canvas">
+                            <canvas id="liquidoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de presupuestos -->
+            <div class="presupuestos-section">
+                <h2>Presupuestos</h2>
+                <div class="presupuestos-grid" id="presupuestosGrid">
+                    <p class="loading">Cargando presupuestos...</p>
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>
@@ -55,4 +120,5 @@
 <!--Script-->
 <script th:src="@{/js/navText.js}"></script>
 <script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/index.js}"></script>
 </html>

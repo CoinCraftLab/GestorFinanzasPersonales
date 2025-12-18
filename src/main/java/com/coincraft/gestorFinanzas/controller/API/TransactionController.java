@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
+import java.util.List;
 
 
 @RestController
@@ -70,8 +70,13 @@ public class TransactionController {
 
     }
 
-    //5. LISTAR TRANSACCIONES DE USER AUTH
-    //@GetMapping("/allUserTransaction")
+    //5. LISTAR LAS TRANSACCIONES
+    @GetMapping()
+    public ResponseEntity<List<TransactionResponseDTO>> listarTransaccionesUsuario() {
+        List<TransactionResponseDTO> response = transactionService.listarTransaccionesUsuario();
+        return ResponseEntity.ok(response);
+    }
+
     
         
     

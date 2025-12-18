@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Retos</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/formulario-inversion.css}">
+    <link rel="stylesheet" th:href="@{/css/retos.css}">
 </head>
 
 <body>
@@ -46,56 +47,57 @@
 
     </div>
 
-    <div style="display:flex; align-items:flex-start; gap:2rem; padding:2rem;">
-
-        <div style="min-width:260px; text-align:center;">
-            <h2 th:text="${detalleReto.nombre}" style="margin-bottom:1rem;"></h2>
-            <div class="circle circle-big" th:style="'background: conic-gradient(#4caf50 ' +
-                (${detalleReto.predefinido} ? 100 : ${detalleReto.porcentajeCompletado}) +
-                '%, #e0e0e0 0);'">
-                <span th:text="${detalleReto.predefinido} ? '100%' : ${detalleReto.porcentajeCompletado} + '%'"></span>
-            </div>
-            <p th:text="'Actual: ' + ${detalleReto.retoCantidadActual} + ' / ' + ${detalleReto.retoCantidad}"></p>
-            <p th:text="'Fecha fin: ' + ${#temporals.format(detalleReto.fechaFin, 'yyyy-MM-dd')}"></p>
-        </div>
-
-
-        <div style="flex:1;">
-            <h3 style="margin-top:0;">Historial de Movimientos</h3>
-
-            <div th:if="${#lists.isEmpty(detalleReto.movimientos)}">
-                <p>Sin movimientos.</p>
+    <div class="contenido">
+        <div class="detalle-reto-container">
+            <!-- Izquierda: Círculo y datos del reto -->
+            <div class="detalle-izquierda">
+                <h2 th:text="${detalleReto.nombre}"></h2>
+                <div class="circle circle-big">
+                    <span th:text="${detalleReto.predefinido} ? '100%' : ${detalleReto.porcentajeCompletado} + '%'"></span>
+                </div>
+                <div class="detalle-info">
+                    <p th:text="'Actual: ' + ${detalleReto.retoCantidadActual} + '€ / ' + ${detalleReto.retoCantidad} + '€'"></p>
+                    <p th:text="'Fecha fin: ' + ${#temporals.format(detalleReto.fechaFin, 'dd-MM-yyyy')}"></p>
+                    <p th:if="${!detalleReto.predefinido}" th:text="'Aporte mensual: ' + ${detalleReto.aporteMensualNecesario} + '€'"></p>
+                </div>
             </div>
 
-            <table th:if="${!#lists.isEmpty(detalleReto.movimientos)}"
-                style="width:100%; border-collapse:collapse; margin-bottom:1rem;">
-                <thead>
+            <!-- Derecha: Historial de movimientos -->
+            <div class="detalle-derecha">
+                <h3>Movimientos realizados</h3>
+
+                <div th:if="${#lists.isEmpty(detalleReto.movimientos)}" class="sin-movimientos">
+                    <p>Sin movimientos registrados.</p>
+                </div>
+
+                <table th:if="${!#lists.isEmpty(detalleReto.movimientos)}" class="tabla-movimientos">
+                    <thead>
                     <tr>
-                        <th style="text-align:left; padding:0.5rem; border-bottom:1px solid #e0e0e0;">Fecha</th>
-                        <th style="text-align:left; padding:0.5rem; border-bottom:1px solid #e0e0e0;">Origen</th>
-                        <th style="text-align:left; padding:0.5rem; border-bottom:1px solid #e0e0e0;">Destino</th>
-                        <th style="text-align:left; padding:0.5rem; border-bottom:1px solid #e0e0e0;">Cantidad</th>
+                        <th>Fecha</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Cantidad</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr th:each="mov : ${detalleReto.movimientos}">
-                        <td style="padding:0.5rem;" th:text="${#temporals.format(mov.fechaMovimiento, 'yyyy-MM-dd')}">
-                        </td>
-                        <td style="padding:0.5rem;" th:text="${mov.categoriaOrigenNombre}"></td>
-                        <td style="padding:0.5rem;" th:text="${mov.categoriaDestinoNombre}"></td>
-                        <td style="padding:0.5rem;" th:text="${mov.cantidad}"></td>
+                        <td th:text="${#temporals.format(mov.fechaMovimiento, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${mov.categoriaOrigenNombre}"></td>
+                        <td th:text="${mov.categoriaDestinoNombre}"></td>
+                        <td th:text="${mov.cantidad} + '€'"></td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
-            <div style="display:flex; gap:0.75rem;">
-                <form th:action="@{'/retos/eliminarReto/' + ${detalleReto.retoId}}" method="post">
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-                <button class="btn btn-secondary"
-                    th:onclick="'window.location.href=\'/retos/editarReto/' + ${detalleReto.retoId} + '\''">
-                    Editar
-                </button>
+                <div class="detalle-acciones">
+                    <form th:action="@{'/retos/eliminarReto/' + ${detalleReto.retoId}}" method="post" onsubmit="return confirmarEliminarReto(event)">
+                        <button type="submit" class="btn btn-danger">Eliminar Reto</button>
+                    </form>
+                    <button class="btn btn-secondary"
+                            th:onclick="'window.location.href=\'/retos/editarReto/' + ${detalleReto.retoId} + '\''">
+                        Editar Reto
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -111,5 +113,6 @@
 <!--Script-->
 <script th:src="@{/js/navText.js}"></script>
 <script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/retos.js}"></script>
 
 </html>

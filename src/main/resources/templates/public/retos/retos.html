@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Retos</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/formulario-inversion.css}">
+    <link rel="stylesheet" th:href="@{/css/retos.css}">
 </head>
 
 <body>
@@ -46,68 +47,83 @@
 
     </div>
 
-    <div style="display:flex; flex-direction: column; justify-content: center; align-items: center;">
-        <p>Mover Dinero</p>
-        <div
-            style="width: 900px; height: 350px; border: 1px solid black; border-radius: 20px; background-color: white;">
-            <div class="divPartidoVertical">
-                <div style="display:flex; justify-content: center; align-items: center; flex-direction: column;">
-                    <p style="margin-top:2rem; font-style: italic; font-weight: bold;">Cantidad disponible en Retos</p>
-                    <p th:text="${totalRetos}"></p>
-
-                    <p style="font-style: italic; font-weight: bold;">Cantidad en liquidez</p>
-                    <p th:text="${liquidez}"></p>
-
-                    <p style="font-style: italic; font-weight: bold;">Cantidad en Ahorro</p>
-                    <p th:text="${ahorro}"></p>
+    <div class="contenido">
+        <!-- Sección: Mover Dinero -->
+        <div class="mover-dinero-container">
+            <h2>Mover Dinero</h2>
+            <div class="mover-dinero-card">
+                <!-- Cantidades (izquierda) -->
+                <div class="cantidades-info">
+                    <div class="cantidad-item">
+                        <div class="cantidad-label">Cantidad disponible en Retos</div>
+                        <div class="cantidad-valor" th:text="${totalRetos} + '€'"></div>
+                    </div>
+                    <div class="cantidad-item">
+                        <div class="cantidad-label">Cantidad en liquidez</div>
+                        <div class="cantidad-valor" th:text="${liquidez} + '€'"></div>
+                    </div>
+                    <div class="cantidad-item">
+                        <div class="cantidad-label">Cantidad en Ahorro</div>
+                        <div class="cantidad-valor" th:text="${ahorro} + '€'"></div>
+                    </div>
                 </div>
-                <div>
-                    <form th:action="@{/retos/movimiento}" method="post"
-                        style="display:flex;flex-direction:column;gap:0.75rem;">
-                        <label>Fecha</label>
-                        <input type="date" name="fechaMovimiento" required>
 
+                <!-- Formulario (derecha) -->
+                <form th:action="@{/retos/movimiento}" method="post" class="movimiento-form">
+                    <div class="form-group">
+                        <label>Fecha límite</label>
+                        <input type="date" name="fechaMovimiento" required>
+                    </div>
+
+                    <div class="form-group">
                         <label>Reto origen</label>
                         <select name="categoriaOrigen" required>
                             <option value="" disabled selected>Selecciona un reto</option>
                             <option th:each="r : ${listaRetos}" th:value="${r.retoId}" th:text="${r.nombre}"></option>
                         </select>
+                    </div>
 
+                    <div class="form-group">
                         <label>Reto destino</label>
                         <select name="categoriaDestino" required>
                             <option value="" disabled selected>Selecciona un reto</option>
                             <option th:each="r : ${listaRetos}" th:value="${r.retoId}" th:text="${r.nombre}"></option>
                         </select>
+                    </div>
 
+                    <div class="form-group">
                         <label>Cantidad</label>
                         <input type="number" name="cantidad" step="0.01" min="0.01" required>
-
-                        <button type="submit">Crear movimiento</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <p>Lista de Retos</p>
-        <div
-            style="width:1300px; height:220px; border:1px solid black; border-radius:20px; background-color:white; overflow-x:auto; overflow-y:hidden;">
-            <div class="retos-row">
-                <div class="reto-card" th:each="reto : ${listaRetos}"
-                    th:onclick="'window.location.href=\'/retos/' + ${reto.retoId} + '\''">
-                    <div class="circle"
-                        th:style="'background: conic-gradient(#4caf50 ' + (${reto.predefinido} ? 100 : ${reto.porcentajeCompletado}) + '%, #e0e0e0 0);'">
-                        <span th:text="${reto.predefinido} ? '100%' : ${reto.porcentajeCompletado} + '%'"></span>
                     </div>
-                    <p th:text="${reto.nombre}"></p>
-                    <p th:text="${reto.retoCantidadActual} + ' / ' + ${reto.retoCantidad}"></p>
+
+                    <button type="submit" class="btn-submit">Crear movimiento</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sección: Lista de Retos -->
+        <div class="lista-retos-section">
+            <h2>Lista de Retos</h2>
+            <div class="retos-scroll-container">
+                <div class="retos-row">
+                    <div class="reto-card" th:each="reto : ${listaRetos}"
+                         th:onclick="'irADetalleReto(' + ${reto.retoId} + ')'">
+                        <div class="circle">
+                            <span th:text="${reto.predefinido} ? '100%' : ${reto.porcentajeCompletado} + '%'"></span>
+                        </div>
+                        <p th:text="${reto.nombre}"></p>
+                        <p th:text="${reto.retoCantidadActual} + ' / ' + ${reto.retoCantidad} + '€'"></p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div style="display:flex; justify-content: flex-end; align-items: center; margin-left:100rem;">
-            <button class="btn btn-secondary" onclick="goToCrearReto()">Crear Reto</button>
+        <!-- Botones de acción -->
+        <div class="action-buttons">
+            <button class="btn btn-success" onclick="goToCrearReto()">Crear Reto</button>
         </div>
     </div>
+
 
 </body>
 
@@ -115,5 +131,6 @@
 <!--Script-->
 <script th:src="@{/js/navText.js}"></script>
 <script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/retos.js}"></script>
 
 </html>
