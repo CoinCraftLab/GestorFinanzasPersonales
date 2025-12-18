@@ -2,6 +2,7 @@ package com.coincraft.gestorFinanzas.service;
 
 import java.util.List;
 
+import com.coincraft.gestorFinanzas.dto.userDTO.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,13 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.coincraft.gestorFinanzas.dto.TokenResponse;
-import com.coincraft.gestorFinanzas.dto.userDTO.ApiMessageResponse;
-import com.coincraft.gestorFinanzas.dto.userDTO.ChangeEmailResponse;
-import com.coincraft.gestorFinanzas.dto.userDTO.ChangePasswordResponse;
-import com.coincraft.gestorFinanzas.dto.userDTO.UpdateEmailRequest;
-import com.coincraft.gestorFinanzas.dto.userDTO.UpdateNameRequest;
-import com.coincraft.gestorFinanzas.dto.userDTO.UpdatePasswordRequest;
-import com.coincraft.gestorFinanzas.dto.userDTO.UserProfileResponse;
 import com.coincraft.gestorFinanzas.model.Token;
 import com.coincraft.gestorFinanzas.model.User;
 import com.coincraft.gestorFinanzas.repository.TokenRepository;
@@ -35,7 +29,12 @@ public class UserService {
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
 
-    private User getAuthenticatedUser() {
+    /*
+
+    Se comenta sólo para las pruebas. Cuando funcione el login, éste será el utilizado
+    por todos los endpoints
+
+    public User getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof UserDetails details)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado");
@@ -44,9 +43,20 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public UserProfileResponse getProfileData(){
-        User user = getAuthenticatedUser();
-        return new UserProfileResponse(user.getName(),user.getEmail());
+    */
+
+    // Para pruebas: siempre devolver el usuario con id=1
+    //Debe borrarse el metodo cuando se arregle el login
+    public User getAuthenticatedUser() {
+        return userRepository.findById(1L)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    //Hardcodeado para que devuelva siempre el usuario id=1
+    public UserResponse getProfileData(){
+        User user = userRepository.findById(1L)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return UserResponse.fromEntity(user);
     }
 
     public List<String> changeUsername(UpdateNameRequest request){

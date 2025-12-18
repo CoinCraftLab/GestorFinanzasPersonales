@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Perfil</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
 </head>
 
 <body>
@@ -46,7 +47,98 @@
     </div>
 
     <div class="contenido">
-        <p th:text="${mensaje}">Mensaje de prueba</p>
+        <div class="perfil-container">
+            <!-- Logo grande (izquierda) -->
+            <div class="logo-section">
+                <img th:src="@{/img/logo verde relleno sin fondo.png}" alt="CoinCraft Logo" class="logo-grande">
+            </div>
+
+            <!-- Información del usuario y botones (derecha) -->
+            <div class="info-section">
+                <div class="user-info">
+                    <div class="info-item">
+                        <span class="info-label">Usuario</span>
+                        <span class="info-value" id="userName">Cargando...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="userEmail">Cargando...</span>
+                    </div>
+                </div>
+
+                <div class="botones-perfil">
+                    <button class="btn btn-success" onclick="abrirModalEditarPerfil()">Editar perfil</button>
+                    <button class="btn btn-dark">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar perfil -->
+    <div id="modalEditarPerfil" class="modal">
+        <div class="modal-content modal-perfil">
+            <h3>Editar Perfil</h3>
+
+            <!-- Tabs para cambiar entre secciones -->
+            <div class="tabs">
+                <button class="tab-button active" onclick="cambiarTab('username')">Nombre de Usuario</button>
+                <button class="tab-button" onclick="cambiarTab('email')">Email</button>
+                <button class="tab-button" onclick="cambiarTab('password')">Contraseña</button>
+            </div>
+
+            <!-- Formulario: Cambiar Username -->
+            <div id="tab-username" class="tab-content active">
+                <form onsubmit="cambiarUsername(event)">
+                    <div class="form-group">
+                        <label for="newUsername">Nuevo Nombre de Usuario*</label>
+                        <input type="text" id="newUsername" required>
+                    </div>
+                    <div id="mensajeUsername" class="mensaje" style="display:none;"></div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="cerrarModalEditarPerfil()">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Formulario: Cambiar Email -->
+            <div id="tab-email" class="tab-content">
+                <form onsubmit="cambiarEmail(event)">
+                    <div class="form-group">
+                        <label for="newEmail">Nuevo Email*</label>
+                        <input type="email" id="newEmail" required>
+                    </div>
+                    <div id="mensajeEmail" class="mensaje" style="display:none;"></div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="cerrarModalEditarPerfil()">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Formulario: Cambiar Contraseña -->
+            <div id="tab-password" class="tab-content">
+                <form onsubmit="cambiarPassword(event)">
+                    <div class="form-group">
+                        <label for="oldPassword">Contraseña Actual*</label>
+                        <input type="password" id="oldPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Nueva Contraseña*</label>
+                        <input type="password" id="newPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar Nueva Contraseña*</label>
+                        <input type="password" id="confirmPassword" required minlength="6">
+                    </div>
+                    <div id="mensajePassword" class="mensaje" style="display:none;"></div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="cerrarModalEditarPerfil()">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
 </body>
@@ -55,4 +147,5 @@
 <!--Script-->
 <script th:src="@{/js/navText.js}"></script>
 <script th:src="@{/js/navigate.js}"></script>
+<script th:src="@{/js/perfil.js}"></script>
 </html>

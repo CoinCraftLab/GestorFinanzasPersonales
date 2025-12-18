@@ -2,6 +2,7 @@ package com.coincraft.gestorFinanzas.controller.API;
 
 import java.util.List;
 
+import com.coincraft.gestorFinanzas.model.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class UserController {
 
     // Optener informacion del user Authenticado
     @GetMapping("/AuthUserData")
-    public UserProfileResponse getProfileData() {
+    public UserResponse getProfileData() {
         return userService.getProfileData();
     }
 
@@ -76,9 +77,12 @@ public class UserController {
     @GetMapping("/logout")
     public ResponseEntity<ApiMessageResponse> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         return ResponseEntity.ok(userService.logout(authorizationHeader));
-    }  
-    
+    }
 
+    @GetMapping("/perfil")
+    public UserResponse getPerfil() {
+        return userService.getProfileData();
+    }
     
 
 
