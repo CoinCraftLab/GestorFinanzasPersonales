@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Retos</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/formulario-inversion.css}">
+</head>
+
+<body>
+    <div class="navbar">
+
+        <img th:src="@{/img/LogoHorizontal.png}" style="width:15vw;">
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonInicio" onclick="goToIndex()">Inicio</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInicio" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonTransacciones" onclick="goToTransacciones()">Transacciones</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgTransacciones" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonRetos" onclick="goToRetos()">Retos</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgRetos" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonInversiones" onclick="goToInversiones()">Inversiones</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInversiones" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonPresupuestos" onclick="goToPresupuesto()">Presupuestos</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPresupuesto" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonPerfil" onclick="goToPerfil()">Perfil</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPerfil" style="width: 2rem; display:none">
+        </div>
+
+        <p id="textoPruebaRuta" style="position:absolute; top:-2.5rem; right:20.5rem; color: rgb(160, 167, 164);"></p>
+
+    </div>
+
+    <div style="display:flex; align-items:flex-start; gap:2rem; padding:2rem;">
+
+        <div style="min-width:260px; text-align:center;">
+            <h2 th:text="${detalleReto.nombre}" style="margin-bottom:1rem;"></h2>
+            <div class="circle circle-big" th:style="'background: conic-gradient(#4caf50 ' +
+                (${detalleReto.predefinido} ? 100 : ${detalleReto.porcentajeCompletado}) +
+                '%, #e0e0e0 0);'">
+                <span th:text="${detalleReto.predefinido} ? '100%' : ${detalleReto.porcentajeCompletado} + '%'"></span>
+            </div>
+            <p th:text="'Actual: ' + ${detalleReto.retoCantidadActual} + ' / ' + ${detalleReto.retoCantidad}"></p>
+            <p th:text="'Fecha fin: ' + ${#temporals.format(detalleReto.fechaFin, 'yyyy-MM-dd')}"></p>
+        </div>
+
+
+        <div style="flex:1;">
+            <h3 style="margin-top:0;">Historial de Movimientos</h3>
+
+            <div th:if="${#lists.isEmpty(detalleReto.movimientos)}">
+                <p>Sin movimientos.</p>
+            </div>
+
+            <table th:if="${!#lists.isEmpty(detalleReto.movimientos)}"
+                style="width:100%; border-collapse:collapse; margin-bottom:1rem;">
+                <thead>
+                    <tr>
+                        <th style="text-align:left; padding:0.5rem; border-bottom:1px solid #e0e0e0;">Fecha</th>
+                        <th style="text-align:left; padding:0.5rem; border-bottom:1px solid #e0e0e0;">Origen</th>
+                        <th style="text-align:left; padding:0.5rem; border-bottom:1px solid #e0e0e0;">Destino</th>
+                        <th style="text-align:left; padding:0.5rem; border-bottom:1px solid #e0e0e0;">Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="mov : ${detalleReto.movimientos}">
+                        <td style="padding:0.5rem;" th:text="${#temporals.format(mov.fechaMovimiento, 'yyyy-MM-dd')}">
+                        </td>
+                        <td style="padding:0.5rem;" th:text="${mov.categoriaOrigenNombre}"></td>
+                        <td style="padding:0.5rem;" th:text="${mov.categoriaDestinoNombre}"></td>
+                        <td style="padding:0.5rem;" th:text="${mov.cantidad}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="display:flex; gap:0.75rem;">
+                <form th:action="@{'/retos/eliminarReto/' + ${detalleReto.retoId}}" method="post">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+                <button class="btn btn-secondary"
+                    th:onclick="'window.location.href=\'/retos/editarReto/' + ${detalleReto.retoId} + '\''">
+                    Editar
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<style>
+    .circle-big{
+        width: 220px;
+        height: 220px;
+    }
+</style>
+<!--Script-->
+<script th:src="@{/js/navText.js}"></script>
+<script th:src="@{/js/navigate.js}"></script>
+
+</html>

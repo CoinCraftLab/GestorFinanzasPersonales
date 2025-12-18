@@ -1,9 +1,9 @@
 package com.coincraft.gestorFinanzas.dto.retoDTO;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-
-import java.time.LocalDateTime;
 
 /*
     - Contiene los datos que envía el front.
@@ -19,7 +19,7 @@ public record RetoRequest(
         Double retoCantidad,
 
         @NotNull(message="Debe seleccionar una fecha como objetivo")
-        LocalDateTime fechaFin,
+        LocalDate fechaFin,
 
         Boolean predefinido
 ) {

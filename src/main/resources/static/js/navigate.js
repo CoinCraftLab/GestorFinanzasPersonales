@@ -34,6 +34,10 @@ function goToCompra(){
   window.location.href = '/inversiones/crear';
 }
 
+function goToCrearReto(){
+  window.location.href = '/retos/crearReto';
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
   // Los links funcionand direcamtente con el onclick no hace falta esto pero lo dejo por si acaso 

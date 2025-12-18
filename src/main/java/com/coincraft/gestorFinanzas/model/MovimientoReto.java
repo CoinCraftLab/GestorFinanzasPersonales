@@ -1,9 +1,10 @@
 package com.coincraft.gestorFinanzas.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "movimientos_reto")
@@ -18,18 +19,14 @@ public class MovimientoReto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="reto_id", nullable=false)
-    private Retos reto;
-
     @Column(nullable=false)
-    private LocalDateTime fechaMovimiento;
+    private LocalDate fechaMovimiento;
 
-    @Column(nullable=false)
-    private String categoriaOrigen;
+    @ManyToOne @JoinColumn(name = "reto_origen_id", nullable = false)
+    private Retos categoriaOrigen;
 
-    @Column(nullable=false)
-    private String categoriaDestino;
+    @ManyToOne @JoinColumn(name = "reto_destino_id", nullable = false)
+    private Retos categoriaDestino;
 
     @Column(nullable=false)
     private Double cantidad;

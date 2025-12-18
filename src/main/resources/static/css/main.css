@@ -99,3 +99,38 @@ body {
 .row-selectable.row-selectable{
     border: 1px solid #7c9e63;
 }
+
+.retos-grid { 
+    display:grid; 
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); 
+    gap:1rem; 
+}
+
+.reto-card { cursor:pointer; 
+    border:1px solid #ccc; 
+    border-radius:12px; 
+    padding:1rem; 
+    text-align:center; 
+}
+
+.circle { 
+    width:90px; 
+    height:90px; 
+    border-radius:50%; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    margin:0 auto 0.5rem;
+}
+
+.retos-row { 
+    display:flex; 
+    flex-wrap:nowrap; 
+    gap:1rem; 
+    padding:1rem; 
+    width:max-content; 
+}
+.reto-card { 
+    flex:0 0 auto; 
+}
+

@@ -47,44 +47,25 @@
     </div>
 
     <div style="display:flex; flex-direction: column; justify-content: center; align-items: center;">
-        <p>Mover Dinero</p>
+        <p>Crear Reto</p>
         <div
-            style="width: 900px; height: 350px; border: 1px solid black; border-radius: 20px; background-color: white;">
-            <div class="divPartidoVertical">
-                <div style="display:flex; justify-content: center; align-items: center; flex-direction: column;">
-                    <p style="margin-top:2rem; font-style: italic; font-weight: bold;">Cantidad disponible en Retos</p>
-                    <p th:text="${totalRetos}"></p>
+            style="width: 900px; height: 400px; border: 1px solid black; border-radius: 20px; background-color: white;">
+            <div style="display:flex; flex-direction: column; align-items: center; justify-content: center;">
+                <form th:action="@{/retos/crearReto}" method="post"
+                    style="display:flex;flex-direction:column;gap:0.75rem;max-width:420px;">
+                    <label>Nombre</label>
+                    <input name="nombre" required>
 
-                    <p style="font-style: italic; font-weight: bold;">Cantidad en liquidez</p>
-                    <p th:text="${liquidez}"></p>
+                    <label>Objetivo</label>
+                    <input type="number" name="retoCantidad" step="0.01" min="0.01" required>
 
-                    <p style="font-style: italic; font-weight: bold;">Cantidad en Ahorro</p>
-                    <p th:text="${ahorro}"></p>
-                </div>
-                <div>
-                    <form th:action="@{/retos/movimiento}" method="post"
-                        style="display:flex;flex-direction:column;gap:0.75rem;">
-                        <label>Fecha</label>
-                        <input type="date" name="fechaMovimiento" required>
+                    <label>Fecha fin</label>
+                    <input type="date" name="fechaFin">
 
-                        <label>Reto origen</label>
-                        <select name="categoriaOrigen" required>
-                            <option value="" disabled selected>Selecciona un reto</option>
-                            <option th:each="r : ${listaRetos}" th:value="${r.retoId}" th:text="${r.nombre}"></option>
-                        </select>
+                    <label><input type="checkbox" name="predefinido"> Predefinido</label>
 
-                        <label>Reto destino</label>
-                        <select name="categoriaDestino" required>
-                            <option value="" disabled selected>Selecciona un reto</option>
-                            <option th:each="r : ${listaRetos}" th:value="${r.retoId}" th:text="${r.nombre}"></option>
-                        </select>
-
-                        <label>Cantidad</label>
-                        <input type="number" name="cantidad" step="0.01" min="0.01" required>
-
-                        <button type="submit">Crear movimiento</button>
-                    </form>
-                </div>
+                    <button type="submit">Crear reto</button>
+                </form>
             </div>
         </div>
 
@@ -105,8 +86,9 @@
         </div>
 
         <div style="display:flex; justify-content: flex-end; align-items: center; margin-left:100rem;">
-            <button class="btn btn-secondary" onclick="goToCrearReto()">Crear Reto</button>
+            <button class="btn btn-secondary" onclick="goToRetos()">Volver a Retos</button>
         </div>
+
     </div>
 
 </body>

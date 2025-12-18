@@ -9,4 +9,5 @@ import com.coincraft.gestorFinanzas.model.Transaccion;
 public interface TransactionRepository extends JpaRepository<Transaccion, Long>{
     List<Transaccion> findByUserIdOrderByFechaTransaccionDesc(Long userId);
     
+
 }
