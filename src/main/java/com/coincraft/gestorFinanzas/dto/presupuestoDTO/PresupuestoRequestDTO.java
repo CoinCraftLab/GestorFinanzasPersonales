@@ -1,6 +1,7 @@
 package com.coincraft.gestorFinanzas.dto.presupuestoDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,5 +35,7 @@ public class PresupuestoRequestDTO {
 
     // Descripción opcional del presupuesto
     private String description;
+
+    private List<Long> categoriaIds;
     
 }

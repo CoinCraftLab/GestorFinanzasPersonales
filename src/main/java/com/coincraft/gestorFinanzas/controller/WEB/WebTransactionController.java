@@ -1,5 +1,8 @@
 package com.coincraft.gestorFinanzas.controller.WEB;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,9 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.coincraft.gestorFinanzas.dto.transactionDTO.CategoriaGastoDTO;
 import com.coincraft.gestorFinanzas.dto.transactionDTO.CreateTransactionDTO;
+import com.coincraft.gestorFinanzas.dto.transactionDTO.TransactionResponseDTO;
 import com.coincraft.gestorFinanzas.dto.transactionDTO.UpdateTransactionDTO;
 import com.coincraft.gestorFinanzas.repository.CategoriaTransferenciaRepository;
 import com.coincraft.gestorFinanzas.repository.TipoTransferenciaRepository;
@@ -60,6 +66,27 @@ public class WebTransactionController {
     public String eliminar(@PathVariable Long id) {
         transactionService.eliminarTransaccion(id);
         return "redirect:/transacciones";
+    }
+
+    @GetMapping("/presupuestos/prueba")
+    public String getPresupuestosPrueba(
+            @RequestParam(value = "mes", required = false) Integer mes,
+            @RequestParam(value = "anio", required = false) Integer anio,
+            Model model) {
+
+        LocalDate hoy = LocalDate.now();
+        int mesSel = (mes != null) ? mes : hoy.getMonthValue();
+        int anioSel = (anio != null) ? anio : hoy.getYear();
+
+        List<TransactionResponseDTO> gastos = transactionService.listarGastosPorMesAnio(mesSel, anioSel);
+        List<CategoriaGastoDTO> categorias = transactionService.resumenGastosPorCategoria(mesSel, anioSel);
+
+        model.addAttribute("historicoTransferencias", gastos);    
+        model.addAttribute("categoriaCirculos", categorias); 
+        model.addAttribute("mesSeleccionado", mesSel);
+        model.addAttribute("anioSeleccionado", anioSel);
+
+        return "public/presupuestos/presupuestosPrueba";
     }
 
 }

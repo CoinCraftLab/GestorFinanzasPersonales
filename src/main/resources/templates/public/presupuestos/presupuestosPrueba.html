@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Transacciones</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/transacciones.css}">
+</head>
+
+<body>
+    <div class="navbar">
+
+        <img th:src="@{/img/LogoHorizontal.png}" style="width:15vw;">
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonInicio" onclick="goToIndex()">Inicio</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInicio" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonTransacciones" onclick="goToTransacciones()">Transacciones</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgTransacciones" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonRetos" onclick="goToRetos()">Retos</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgRetos" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonInversiones" onclick="goToInversiones()">Inversiones</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgInversiones" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonPresupuestos" onclick="goToPresupuesto()">Presupuestos</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPresupuesto" style="width: 2rem; display:none">
+        </div>
+
+        <div class="navbarTextMiniLogo">
+            <p class="navButton" id="navButtonPerfil" onclick="goToPerfil()">Perfil</p>
+            <img th:src="@{/img/LogoSoloBarra.png}" id="navImgPerfil" style="width: 2rem; display:none">
+        </div>
+
+    </div>
+
+    <div class="contenido" style="margin-top:5rem;">
+        <div class="transacciones-container">
+            <!-- Sección de historial (izquierda) -->
+            <div class="historial-section">
+                <h2>Historial de Transacciones</h2>
+
+                <!-- Filtros por mes y año -->
+                <div class="filtros-container">
+                    <select id="filtroMes" class="filtro-select">
+                        <option value="">Mes</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+
+                    <select id="filtroAnio" class="filtro-select">
+                        <option value="">Año</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+
+                <!-- Tabla de transacciones -->
+                <div class="tabla-container">
+                    <table class="tabla-historial">
+                        <thead>
+                            <tr th:each="row: ${historicoTransferencias}">
+                                <td class="col-fecha"
+                                    th:text="${#temporals.format(row.fechaTransaccion, 'dd/MM/yyyy')}"></td>
+                                <td class="col-categoria" th:text="${row.categoriaTransferenciaNombre}"></td>
+                                <td class="col-cantidad" th:text="${#numbers.formatDecimal(row.cantidad, 1, 2)} + ' €'">
+                                </td>
+                                <td class="col-descripcion" th:text="${row.descripcion}" th:title="${row.descripcion}">
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody id="historialBody">
+                            <tr th:each="row: ${historicoTransferencias}" th:attr="data-id=${row.id}"
+                                class="row-selectable">
+                                <td class="col-fecha"
+                                    th:text="${#temporals.format(row.fechaTransaccion, 'dd/MM/yyyy')}"></td>
+                                <td class="col-categoria" th:text="${row.categoriaTransferenciaNombre}"></td>
+                                <td class="col-tipo" th:text="${row.tipoTransferenciaNombre}"
+                                    th:classappend="${row.tipoTransferenciaNombre == 'Ingreso'} ? 'tipo-ingreso' : 'tipo-gasto'">
+                                </td>
+                                <td class="col-cantidad" th:text="${#numbers.formatDecimal(row.cantidad, 1, 2)} + '€'">
+                                </td>
+                                <td class="col-descripcion" th:text="${row.descripcion}" th:title="${row.descripcion}">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sección de % (derecha) -->
+            <div class="form-section">
+                <h2>Distribución de gastos</h2>
+                <div style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:1rem;">
+                    <div th:each="c : ${categoriaCirculos}"
+                        style="border:1px solid #e5e5e5; border-radius:1rem; padding:1rem; display:flex; gap:1rem; align-items:center;">
+                        <div style="width:80px; height:80px; position:relative;">
+                            <svg viewBox="0 0 36 36" style="width:80px; height:80px;">
+                                <path d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e6e6e6" stroke-width="3" />
+                                <path d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#141414" stroke-width="3"
+                                    stroke-linecap="round" th:attr="stroke-dasharray=${c.percent} + ', 100'" />
+                            </svg>
+                            <div
+                                style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:700;">
+                                <span th:text="${c.percent}">0</span><span>%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p style="margin:0; font-weight:700;" th:text="${c.categoriaNombre}">Categoría</p>
+                            <p style="margin:.2rem 0 0 0; color:#666;">
+                                <span th:text="${#numbers.formatDecimal(c.total,1,2)}"></span> €
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+<!--Script-->
+<script th:src="@{/js/navText.js}"></script>
+<script th:src="@{/js/navigate.js}"></script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const mes = document.getElementById('filtroMes');
+    const anio = document.getElementById('filtroAnio');
+    const go = () => {
+        const params = new URLSearchParams();
+        if (mes.value) params.append('mes', mes.value);
+        if (anio.value) params.append('anio', anio.value);
+        const qs = params.toString();
+        window.location.href = qs ? `/presupuestos/prueba?${qs}` : '/presupuestos/prueba';
+    };
+    if (mes) mes.addEventListener('change', go);
+    if (anio) anio.addEventListener('change', go);
+});
+</script>
+
+</html>

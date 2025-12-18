@@ -1,18 +1,25 @@
 package com.coincraft.gestorFinanzas.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.coincraft.gestorFinanzas.dto.presupuestoDTO.PresupuestoMesDTO;
 import com.coincraft.gestorFinanzas.dto.presupuestoDTO.PresupuestoRequestDTO;
 import com.coincraft.gestorFinanzas.dto.presupuestoDTO.PresupuestoResponseDTO;
+import com.coincraft.gestorFinanzas.model.CategoriaPresupuestoRelation;
 import com.coincraft.gestorFinanzas.model.CategoriaTransferencia;
 import com.coincraft.gestorFinanzas.model.Presupuesto;
 import com.coincraft.gestorFinanzas.model.User;
 import com.coincraft.gestorFinanzas.repository.CategoriaTransferenciaRepository;
 import com.coincraft.gestorFinanzas.repository.PresupuestoRepository;
+import com.coincraft.gestorFinanzas.repository.TransactionRepository;
 import com.coincraft.gestorFinanzas.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +37,8 @@ public class PresupuestoService {
     private final PresupuestoRepository presupuestoRepository;
     private final UserRepository userRepository;
     private final CategoriaTransferenciaRepository categoriaTransferenciaRepository;
+    private final TransactionRepository TransactionRepository;
+
 
     // Crear un nuevo presupuesto
     public PresupuestoResponseDTO crearPresupuesto(PresupuestoRequestDTO dto) {
@@ -142,4 +151,6 @@ public class PresupuestoService {
                 .description(presupuesto.getDescription())
                 .build();
     }
+
+
 }

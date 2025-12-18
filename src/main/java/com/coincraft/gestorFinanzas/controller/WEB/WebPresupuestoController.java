@@ -35,17 +35,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebPresupuestoController {
 
+    private static final Long DEFAULT_USER_ID = 1L;
+
     private final PresupuestoService presupuestoService;
     private final CategoriaTransferenciaRepository categoriaRepo;
     private final UserRepository userRepository;
 
-    /* =========================
-        VISTA PRINCIPAL
-       ========================= */
+    /*
+     * =========================
+     * VISTA PRINCIPAL
+     * =========================
+     */
     @GetMapping("/presupuestos")
     public String getPresupuestos(
             @RequestParam(value = "userId", required = false) Long userId,
             Model model) {
+
+        Long effectiveUserId = (userId != null) ? userId : DEFAULT_USER_ID;
 
         // Para el selector de usuarios
         model.addAttribute("usuarios", userRepository.findAll(Sort.by("name")));
@@ -53,10 +59,9 @@ public class WebPresupuestoController {
         // Para el selector de categorías (multiselección)
         model.addAttribute("categorias", categoriaRepo.findAll(Sort.by("name")));
 
-        // Si no se selecciona usuario, dejamos lista vacía (así no mezclas usuarios en pruebas)
-        List<PresupuestoResponseDTO> presupuestos = (userId == null)
-                ? List.of()
-                : presupuestoService.obtenerPorUsuario(userId);
+        // Si no se selecciona usuario, dejamos lista vacía (así no mezclas usuarios en
+        // pruebas)
+        List<PresupuestoResponseDTO> presupuestos = presupuestoService.obtenerPorUsuario(effectiveUserId);
 
         model.addAttribute("selectedUserId", userId);
         model.addAttribute("ingresosAnuales", calcularBarrasAnuales(presupuestos));
@@ -66,9 +71,11 @@ public class WebPresupuestoController {
         return "public/presupuestos/presupuestos";
     }
 
-    /* =========================
-        CREAR PRESUPUESTO
-       ========================= */
+    /*
+     * =========================
+     * CREAR PRESUPUESTO
+     * =========================
+     */
     @PostMapping("/presupuestos")
     public String crearPresupuesto(@ModelAttribute PresupuestoWebDTO webDto) {
 
@@ -83,37 +90,40 @@ public class WebPresupuestoController {
         }
 
         // Creamos 1 Presupuesto por categoría seleccionada (sin tocar modelo)
-        for (Long categoriaId : webDto.getCategoriasAsociadasIds()) {
+        PresupuestoRequestDTO req = PresupuestoRequestDTO.builder()
+                .userId(webDto.getUserId())
+                .categoriaIds(webDto.getCategoriasAsociadasIds())
+                .categoriaTransferenciaId(
+                        (webDto.getCategoriasAsociadasIds() != null && !webDto.getCategoriasAsociadasIds().isEmpty())
+                                ? webDto.getCategoriasAsociadasIds().get(0)
+                                : null)
+                .fechaTransaccion(LocalDateTime.now())
+                .cantidad(webDto.getCantidadMensual())
+                .description(buildDescription(webDto))
+                .build();
 
-            PresupuestoRequestDTO req = PresupuestoRequestDTO.builder()
-                    .userId(webDto.getUserId())
-                    .categoriaTransferenciaId(categoriaId)
-                    .fechaTransaccion(LocalDateTime.now())
-                    .cantidad(webDto.getCantidadMensual())
-                    .description(buildDescription(webDto))
-                    .build();
-
-            presupuestoService.crearPresupuesto(req);
-        }
+        presupuestoService.crearPresupuesto(req);
 
         return "redirect:/presupuestos?userId=" + webDto.getUserId();
     }
 
-    /* =========================
-        PANTALLA DE EDICIÓN / LISTADO
-       ========================= */
+    /*
+     * =========================
+     * PANTALLA DE EDICIÓN / LISTADO
+     * =========================
+     */
     @GetMapping("/presupuestos/edit")
     public String getEditPresupuestos(
             @RequestParam(value = "userId", required = false) Long userId,
             Model model) {
 
+        Long effectiveUserId = (userId != null) ? userId : DEFAULT_USER_ID;
+
         model.addAttribute("usuarios", userRepository.findAll(Sort.by("name")));
         model.addAttribute("categorias", categoriaRepo.findAll(Sort.by("name")));
         model.addAttribute("selectedUserId", userId);
 
-        List<PresupuestoResponseDTO> presupuestos = (userId == null)
-                ? List.of()
-                : presupuestoService.obtenerPorUsuario(userId);
+        List<PresupuestoResponseDTO> presupuestos = presupuestoService.obtenerPorUsuario(effectiveUserId);
 
         model.addAttribute("presupuestos", presupuestos);
         model.addAttribute("categoriaProgress", calcularProgresoCategorias(presupuestos));
@@ -122,9 +132,11 @@ public class WebPresupuestoController {
         return "public/presupuestos/editPresupuestos";
     }
 
-    /* =========================
-        EDITAR (SUBMIT)
-       ========================= */
+    /*
+     * =========================
+     * EDITAR (SUBMIT)
+     * =========================
+     */
     @PostMapping("/presupuestos/edit/{id}")
     public String actualizarPresupuesto(
             @PathVariable Long id,
@@ -136,7 +148,8 @@ public class WebPresupuestoController {
 
         Long categoriaId = null;
         if (webDto.getCategoriasAsociadasIds() != null && !webDto.getCategoriasAsociadasIds().isEmpty()) {
-            // Para edición, usamos la primera categoría seleccionada (limitación del modelo actual)
+            // Para edición, usamos la primera categoría seleccionada (limitación del modelo
+            // actual)
             categoriaId = webDto.getCategoriasAsociadasIds().get(0);
         }
 
@@ -153,9 +166,11 @@ public class WebPresupuestoController {
         return "redirect:/presupuestos/edit?userId=" + webDto.getUserId();
     }
 
-    /* =========================
-        ELIMINAR
-       ========================= */
+    /*
+     * =========================
+     * ELIMINAR
+     * =========================
+     */
     @PostMapping("/presupuestos/edit/{id}/delete")
     public String eliminarPresupuesto(
             @PathVariable Long id,
@@ -199,8 +214,7 @@ public class WebPresupuestoController {
             barras.add(new BarraMes(
                     mes.getDisplayName(TextStyle.SHORT, es).toLowerCase(),
                     cantidad,
-                    pct
-            ));
+                    pct));
         }
         return barras;
     }
@@ -217,9 +231,9 @@ public class WebPresupuestoController {
         Map<String, Double> porCategoria = presupuestos.stream()
                 .filter(p -> p.getCantidad() != null)
                 .collect(Collectors.groupingBy(
-                        p -> (p.getCategoriaTransferenciaName() == null ? "Sin categoría" : p.getCategoriaTransferenciaName()),
-                        Collectors.summingDouble(PresupuestoResponseDTO::getCantidad)
-                ));
+                        p -> (p.getCategoriaTransferenciaName() == null ? "Sin categoría"
+                                : p.getCategoriaTransferenciaName()),
+                        Collectors.summingDouble(PresupuestoResponseDTO::getCantidad)));
 
         return porCategoria.entrySet().stream()
                 .sorted(Comparator.comparing(Map.Entry::getKey))
@@ -261,4 +275,7 @@ public class WebPresupuestoController {
         private String name;
         private Integer percent;
     }
+
+
+    
 }

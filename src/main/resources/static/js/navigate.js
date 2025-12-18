@@ -11,7 +11,7 @@ function goToInversiones(){
 }
 
 function goToPresupuesto(){
-  window.location.href = '/presupuestos';
+  window.location.href = '/presupuestos/prueba';
 }
 
 function goToRetos(){
